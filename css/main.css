@@ -108,6 +108,10 @@ div#message ul {
 	padding: 0;
 }
 
+div#message ul {
+	margin: 5px;
+}
+
 input#fire_button {
 	font-weight: bold;
 }
@@ -122,4 +126,14 @@ span.ger{
 
 span.rede{
 	color: #AB000B
+}
+
+
+
+div.google_adsense {
+	margin-top: 10px;
+	margin-bottom: 10px;
+	margin-left: auto;
+	margin-right: auto;
+
 }
