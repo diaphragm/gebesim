@@ -1,0 +1,125 @@
+
+body {
+	font-family: sans-serif;
+	font-size: small;
+	background-color: #2D2D2D;
+}
+
+body a:link {
+	color: inherit;
+	text-decoration: underline;
+}
+body a:visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+div#left_container {
+	margin: 10px;
+	display: inline-block;
+	vertical-align: top;
+}
+
+div#right_container {
+	margin-top: 10px;
+	position: relative;
+	display:inline-block;
+	vertical-align: top;
+}
+
+div#title {
+	font-family: 'arial black', sans-serif;
+	text-align: center;
+	font-size: x-large;
+	font-weight: bold;
+	color: white;
+	background-color: black;
+	border-top: solid 3px #AB000B;
+	border-bottom: solid 3px #AB000B;
+}
+
+div#version {
+	text-align: right;
+	font-family: monospace;
+	font-size: xx-smal;
+	color: #AB000B
+}
+
+div#editor_container {
+	padding: 4px;
+	font-size: x-small;
+	background-color: #ECEBE5;
+	/*box-shadow:rgba(236, 235, 229, 0.2) 0px 0px 2px 2px;*/
+	border: solid 1px #AB000B;
+}
+
+div#gun {
+	text-align: center;
+	margin-bottom: 10px;
+}
+
+div.module {
+	margin: 2px;
+	padding: 2px;
+	border-left: solid 4px;
+}
+
+div#clear {
+	height: 20px;
+	margin: 4px;
+}
+
+div#controlers {
+	position: absolute;
+	margin:10px;
+	padding: 4px;
+	background-color: rgba(255,255,255,0.75)
+}
+
+div#anime_container {
+	padding: 4px;
+	background-color: #ECEBE5;
+	/*box-shadow:rgba(236, 235, 229, 0.2) 0px 0px 2px 2px;*/
+	border: solid 1px #AB000B;
+}
+
+div#tootlip {
+	font-family: monospace;
+	font-size: small;
+	opacity: 0.9;
+	background-color: white;
+	border-left-style: solid;
+	border-left-width: 4px;
+	padding-left: 2px;
+}
+
+div#message {
+	width: 500px;
+	color: white;
+	margin: 10px;
+	padding: 4px;
+}
+div#message a:visited {
+	color: #bbbbbb;
+}
+
+div#message ul {
+	word-wrap: break-word;
+	padding: 0;
+}
+
+input#fire_button {
+	font-weight: bold;
+}
+
+input#clear_module_button {
+	float: right;
+}
+
+span.ger{
+	font-size: larger;
+}
+
+span.rede{
+	color: #AB000B
+}
