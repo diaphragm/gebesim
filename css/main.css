@@ -83,6 +83,10 @@ div#anime_container {
 	border: solid 1px #AB000B;
 }
 
+input#frame_controler {
+	width: 200px;
+}
+
 div#tootlip {
 	font-family: monospace;
 	font-size: small;
@@ -93,22 +97,21 @@ div#tootlip {
 	padding-left: 2px;
 }
 
-div#message {
-	width: 500px;
+div.message {
 	color: white;
 	margin: 10px;
 	padding: 4px;
 }
-div#message a:visited {
+div.message a:visited {
 	color: #bbbbbb;
 }
 
-div#message ul {
+div.message ul {
 	word-wrap: break-word;
 	padding: 0;
 }
 
-div#message ul {
+div.message ul {
 	margin: 5px;
 }
 

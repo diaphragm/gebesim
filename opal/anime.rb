@@ -15,8 +15,8 @@ $mouse = {x: 0, y: 0}
 $intersected = nil
 
 $scale = 100
-$winwidth = 640/2
-$winheight = 480/2
+$winwidth = 640
+$winheight = 480
 
 $bullet_datas = {}
 $bullet_cubes = {}
@@ -24,9 +24,13 @@ $bullet_lines = {}
 
 def init_anime
   el_mc = $win.document.getElementById("module_container")
-  el_ctl = $win.document.getElementById("controlers")
-  $winwidth = [$win.innerWidth - el_mc.clientWidth - 60, 320].max
-  $winheight = [$win.innerHeight - 50, 240].max
+  if $win.innerWidth / $win.innerHeight > 1.2
+    $winwidth = [$win.innerWidth - el_mc.clientWidth - 70, 320].max
+    $winheight = [$win.innerHeight - 60, 240].max
+  else
+    $winwidth = [$win.innerWidth - 20, 320].max
+    $winheight = [$win.innerHeight - 60, 240].max
+  end
 
 
   $scene = Native(`new THREE.Scene()`)
@@ -272,7 +276,7 @@ def init_bullet
   frame_controler.max = $max_frame || 0
   frame_controler.value = $max_frame || 0
   redraw($max_frame)
-
+  
 end
 
 def init_tooltip

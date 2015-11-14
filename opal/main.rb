@@ -30,7 +30,7 @@ COLOR_MAP = {
   15 => 0xC0C0C0,
   16 => 0xFFFFFF,
 }
-COLOR_MAP.default_proc = ->(h,k){ 
+COLOR_MAP.default_proc = ->(h,k){
   h[k] = rand(6)*0x33*0x10000 + rand(6)*0x33*0x100 + rand(6)*0x33
 }
 
