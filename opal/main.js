@@ -16304,7 +16304,7 @@ Opal.modules["anime"] = function(Opal) {
 
     el_mc = $gvars.win.$document().$getElementById("module_container");
     if ($rb_gt($rb_divide($gvars.win.$innerWidth(), $gvars.win.$innerHeight()), 1.2)) {
-      $gvars.winwidth = [$rb_minus($rb_minus($gvars.win.$document().$body().$clientWidth(), el_mc.$clientWidth()), 60), 320].$max();
+      $gvars.winwidth = [$rb_minus($rb_minus($gvars.win.$document().$body().$clientWidth(), el_mc.$clientWidth()), 70), 320].$max();
       $gvars.winheight = [$rb_minus($gvars.win.$innerHeight(), 60), 240].$max();
       } else {
       $gvars.winwidth = [$rb_minus($gvars.win.$document().$body().$clientWidth(), 30), 320].$max();
