@@ -25,7 +25,7 @@ $bullet_lines = {}
 def init_anime
   el_mc = $win.document.getElementById("module_container")
   if $win.innerWidth / $win.innerHeight > 1.2
-    $winwidth = [$win.document.body.clientWidth - el_mc.clientWidth - 60, 320].max
+    $winwidth = [$win.document.body.clientWidth - el_mc.clientWidth - 70, 320].max
     $winheight = [$win.innerHeight - 60, 240].max
   else
     $winwidth = [$win.document.body.clientWidth - 30, 320].max
