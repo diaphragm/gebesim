@@ -28,7 +28,7 @@ def init_anime
     $winwidth = [$win.document.body.clientWidth - el_mc.clientWidth - 60, 320].max
     $winheight = [$win.innerHeight - 60, 240].max
   else
-    $winwidth = [$win.document.body.clientWidth - 20, 320].max
+    $winwidth = [$win.document.body.clientWidth - 30, 320].max
     $winheight = [$win.innerHeight - 60, 240].max
   end
 

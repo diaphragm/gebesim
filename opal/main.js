@@ -16307,7 +16307,7 @@ Opal.modules["anime"] = function(Opal) {
       $gvars.winwidth = [$rb_minus($rb_minus($gvars.win.$document().$body().$clientWidth(), el_mc.$clientWidth()), 60), 320].$max();
       $gvars.winheight = [$rb_minus($gvars.win.$innerHeight(), 60), 240].$max();
       } else {
-      $gvars.winwidth = [$rb_minus($gvars.win.$document().$body().$clientWidth(), 20), 320].$max();
+      $gvars.winwidth = [$rb_minus($gvars.win.$document().$body().$clientWidth(), 30), 320].$max();
       $gvars.winheight = [$rb_minus($gvars.win.$innerHeight(), 60), 240].$max();
     };
     $gvars.scene = self.$Native(new THREE.Scene());
