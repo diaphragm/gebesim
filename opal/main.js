@@ -16001,9 +16001,9 @@ Opal.modules["bullet"] = function(Opal) {
   function $rb_gt(lhs, rhs) {
     return (typeof(lhs) === 'number' && typeof(rhs) === 'number') ? lhs > rhs : lhs['$>'](rhs);
   }
-  var self = Opal.top, $scope = Opal, nil = Opal.nil, $breaker = Opal.breaker, $slice = Opal.slice, $klass = Opal.klass, $hash2 = Opal.hash2;
+  var self = Opal.top, $scope = Opal, nil = Opal.nil, $breaker = Opal.breaker, $slice = Opal.slice, $klass = Opal.klass, $hash2 = Opal.hash2, $hash = Opal.hash;
 
-  Opal.add_stubs(['$require', '$include', '$attr_reader', '$each', '$new', '$[]', '$[]=', '$all?', '$dead?', '$map', '$to_proc', '$identity', '$Native', '$makeRotationFromEuler', '$born?', '$!', '$multiply', '$matrix', '$each_with_object', '$<<', '$matrixes', '$__send__', '$same_fire_delay', '$life', '$age', '$delay', '$min', '$makeTranslation', '$clone', '$local_matrix', '$sqrt', '$lambda', '$-@']);
+  Opal.add_stubs(['$require', '$include', '$attr_reader', '$each', '$new', '$[]', '$[]=', '$all?', '$dead?', '$map', '$to_proc', '$Native', '$makeRotationFromEuler', '$born?', '$!', '$matrix', '$each_with_object', '$<<', '$matrixes', '$__send__', '$same_fire_delay', '$life', '$age', '$delay', '$min', '$makeTranslation', '$multiply', '$clone', '$local_matrix', '$sqrt', '$lambda', '$**', '$-@']);
   self.$require("opal");
   self.$require("native");
   self.$require("math");
@@ -16036,23 +16036,22 @@ if (k == null) k = nil;if (v == null) v = nil;
       return v['$dead?'](frame)}, TMP_2.$$s = self, TMP_2), $a).call($b);
     };
 
-    def.$matrixes = function(frame, init_rot_vector) {
-      var $a, $b, TMP_3, self = this, ret = nil;
+    def.$matrixes = function(frame, gun_rot_vector) {
+      var $a, $b, $c, TMP_3, $d, $e, TMP_4, self = this, ret = nil, gamma = nil, beta = nil, alpha = nil, euler = nil, matrix_gun = nil;
 
-      if (init_rot_vector == null) {
-        init_rot_vector = [0, 0, 0]
+      if (gun_rot_vector == null) {
+        gun_rot_vector = [0, 0, 0]
       }
       ret = $hash2([], {});
-      ($a = ($b = self.modules).$map, $a.$$p = (TMP_3 = function(key, bm){var self = TMP_3.$$s || this, $a, $b, $c, TMP_4, $d, $e, gamma = nil, beta = nil, alpha = nil, mi = nil, euler = nil, available = nil;
-if (key == null) key = nil;if (bm == null) bm = nil;
-      $a = Opal.to_ary(($b = ($c = ($d = ($e = init_rot_vector).$map, $d.$$p = "to_f".$to_proc(), $d).call($e)).$map, $b.$$p = (TMP_4 = function(t){var self = TMP_4.$$s || this;
+      $a = Opal.to_ary(($b = ($c = ($d = ($e = gun_rot_vector).$map, $d.$$p = "to_f".$to_proc(), $d).call($e)).$map, $b.$$p = (TMP_3 = function(t){var self = TMP_3.$$s || this;
 if (t == null) t = nil;
-        return $rb_divide($rb_times(t, $scope.get('PI')), 180)}, TMP_4.$$s = self, TMP_4), $b).call($c)), gamma = ($a[0] == null ? nil : $a[0]), beta = ($a[1] == null ? nil : $a[1]), alpha = ($a[2] == null ? nil : $a[2]);
-        mi = self.$Native(new THREE.Matrix4()).$identity();
-        euler = self.$Native(new THREE.Euler(alpha, beta, gamma, "ZYX"));
-        mi.$makeRotationFromEuler(euler);
-        available = ($a = bm['$born?'](frame), $a !== false && $a !== nil ?bm['$dead?'](frame)['$!']() : $a);
-        return ret['$[]='](key, [mi.$multiply(bm.$matrix(frame)), available]);}, TMP_3.$$s = self, TMP_3), $a).call($b);
+      return $rb_divide($rb_times(t, $scope.get('PI')), 180)}, TMP_3.$$s = self, TMP_3), $b).call($c)), gamma = ($a[0] == null ? nil : $a[0]), beta = ($a[1] == null ? nil : $a[1]), alpha = ($a[2] == null ? nil : $a[2]);
+      euler = self.$Native(new THREE.Euler(alpha, beta, gamma, "ZYX"));
+      matrix_gun = self.$Native(new THREE.Matrix4()).$makeRotationFromEuler(euler);
+      ($a = ($b = self.modules).$map, $a.$$p = (TMP_4 = function(key, bm){var self = TMP_4.$$s || this, $a, available = nil;
+if (key == null) key = nil;if (bm == null) bm = nil;
+      available = ($a = bm['$born?'](frame), $a !== false && $a !== nil ?bm['$dead?'](frame)['$!']() : $a);
+        return ret['$[]='](key, [bm.$matrix(frame, matrix_gun), available]);}, TMP_4.$$s = self, TMP_4), $a).call($b);
       return ret;
     };
 
@@ -16080,11 +16079,11 @@ if (k == null) k = nil;if (v == null) v = nil;
 
     var def = self.$$proto, $scope = self.$$scope;
 
-    def.parent = def.timing = def.life = def.formula_position = def.formula_direction = def.initial_matrix = def.following = nil;
+    def.parent = def.timing = def.life = def.formula_position = def.formula_direction = def.initial_matrix = def.following = def.gravity = def.formula_gravity = nil;
     self.$attr_reader("same_fire_delay", "life");
 
     def.$initialize = function(index, init_rot_vector, parent, timing) {
-      var $a, $b, $c, TMP_7, $d, $e, self = this, gamma = nil, beta = nil, alpha = nil, euler = nil, mr = nil, mi = nil, name = nil, following = nil, type = nil, param = nil;
+      var $a, $b, $c, TMP_7, $d, $e, self = this, gamma = nil, beta = nil, alpha = nil, euler = nil, name = nil, following = nil, type = nil, param = nil;
 
       if (parent == null) {
         parent = nil
@@ -16096,9 +16095,7 @@ if (k == null) k = nil;if (v == null) v = nil;
 if (t == null) t = nil;
       return $rb_divide($rb_times(t, $scope.get('PI')), 180)}, TMP_7.$$s = self, TMP_7), $b).call($c)), gamma = ($a[0] == null ? nil : $a[0]), beta = ($a[1] == null ? nil : $a[1]), alpha = ($a[2] == null ? nil : $a[2]);
       euler = self.$Native(new THREE.Euler(alpha, beta, gamma, "ZYX"));
-      mr = self.$Native(new THREE.Matrix4()).$makeRotationFromEuler(euler);
-      mi = self.$Native(new THREE.Matrix4()).$multiply(mr);
-      self.initial_matrix = mi;
+      self.initial_matrix = self.$Native(new THREE.Matrix4()).$makeRotationFromEuler(euler);
       self.parent = parent;
       self.timing = timing;
       self.log = [];
@@ -16106,6 +16103,8 @@ if (t == null) t = nil;
       self.life = 0;
       self.formula_position = nil;
       self.formula_direction = nil;
+      self.formula_gravity = nil;
+      self.gravity = false;
       $a = Opal.to_ary($scope.get('MODULE_LIST')['$[]'](index)), name = ($a[0] == null ? nil : $a[0]), following = ($a[1] == null ? nil : $a[1]), type = ($a[2] == null ? nil : $a[2]), param = $slice.call($a, 3);
       self.name = name;
       self.following = following;
@@ -16156,20 +16155,27 @@ if (t == null) t = nil;
       return self.initial_matrix.$clone().$multiply(mr).$multiply(mt);
     };
 
-    def.$matrix = function(frame) {
-      var $a, self = this, parent_age = nil, m_p = nil, m_l = nil;
+    def.$matrix = function(frame, matrix_gun) {
+      var $a, self = this, m_tmp = nil, parent_age = nil, m_p = nil, m_l = nil, xg = nil, yg = nil, zg = nil, mg = nil;
 
-      if ((($a = self.parent) !== nil && (!$a.$$is_boolean || $a == true))) {
+      m_tmp = (function() {if ((($a = self.parent) !== nil && (!$a.$$is_boolean || $a == true))) {
         parent_age = (function() {if ((($a = self.following) !== nil && (!$a.$$is_boolean || $a == true))) {
           return frame
           } else {
           return $rb_minus(frame, self.$age(frame))
         }; return nil; })();
-        m_p = self.parent.$matrix(parent_age);
+        m_p = self.parent.$matrix(parent_age, matrix_gun);
         m_l = self.$local_matrix(self.$age(frame));
         return m_p.$multiply(m_l);
         } else {
-        return self.$local_matrix(frame)
+        return matrix_gun.$clone().$multiply(self.$local_matrix(frame))
+      }; return nil; })();
+      if ((($a = self.gravity) !== nil && (!$a.$$is_boolean || $a == true))) {
+        $a = Opal.to_ary(self.formula_gravity['$[]'](self.$age(frame))), xg = ($a[0] == null ? nil : $a[0]), yg = ($a[1] == null ? nil : $a[1]), zg = ($a[2] == null ? nil : $a[2]);
+        mg = self.$Native(new THREE.Matrix4()).$makeTranslation(xg, yg, zg);
+        return mg.$multiply(m_tmp);
+        } else {
+        return m_tmp
       };
     };
 
@@ -16187,61 +16193,80 @@ if (x == null) x = nil;
       return self;
     };
 
-    def.$drilling = function(size, length) {
-      var $a, $b, TMP_10, $c, TMP_11, self = this, speed = nil, rot_speed = nil;
+    def.$straight_g = function(size) {
+      var $a, $b, TMP_10, $c, TMP_11, $d, TMP_12, self = this, speed = nil, g = nil;
 
-      self.life = $hash2(["ss", "s", "m", "l"], {"ss": $hash2(["ss", "s", "l"], {"ss": 2, "s": 15, "l": 30}), "s": $hash2(["ss", "s", "l"], {"ss": 2, "s": 16, "l": 33}), "m": $hash2(["ss", "s", "l"], {"ss": 3, "s": 20, "l": 40}), "l": $hash2(["ss", "s", "l"], {"ss": 3, "s": 25, "l": 50})})['$[]'](size)['$[]'](length);
-      speed = $hash2(["ss", "s", "m", "l"], {"ss": 1.3, "s": $rb_divide(2, self.$sqrt(3)), "m": 1, "l": 0.8})['$[]'](size);
-      rot_speed = $hash2(["ss", "s", "m", "l"], {"ss": $hash2(["ss", "s", "l"], {"ss": $rb_divide($rb_times($scope.get('PI'), 22), 15), "s": $rb_divide($rb_times($scope.get('PI'), 8), 15), "l": $rb_divide($rb_times($scope.get('PI'), 4), 15)}), "s": $hash2(["ss", "s", "l"], {"ss": 2.5, "s": 1.5, "l": 0.75}), "m": $hash2(["ss", "s", "l"], {"ss": $rb_divide($rb_times($scope.get('PI'), 2), 3), "s": $rb_divide($rb_times($scope.get('PI'), 2), 5), "l": $rb_divide($rb_times($scope.get('PI'), 1), 5)}), "l": $hash2(["ss", "s", "l"], {"ss": $rb_divide($rb_times($scope.get('PI'), 2), 15), "s": $rb_divide($rb_times($rb_times(4, 2), $scope.get('PI')), 25), "l": $rb_divide($rb_times($rb_times(4, 2), $scope.get('PI')), 50)})})['$[]'](size)['$[]'](length);
+      self.life = $hash2(["l", "ll"], {"l": 93, "ll": 93})['$[]'](size);
+      speed = $hash2(["l", "ll"], {"l": 0.5, "ll": $rb_divide($rb_times($rb_divide(2, self.$sqrt(3)), 2), 6)})['$[]'](size);
+      g = $hash2(["l", "ll"], {"l": 0.0105, "ll": 0.0105})['$[]'](size);
       self.formula_position = ($a = ($b = self).$lambda, $a.$$p = (TMP_10 = function(x){var self = TMP_10.$$s || this;
 if (x == null) x = nil;
       return [$rb_times(speed, x), 0, 0]}, TMP_10.$$s = self, TMP_10), $a).call($b);
       self.formula_direction = ($a = ($c = self).$lambda, $a.$$p = (TMP_11 = function(x){var self = TMP_11.$$s || this;
 if (x == null) x = nil;
-      return [0, 0, $rb_times(x, rot_speed)]}, TMP_11.$$s = self, TMP_11), $a).call($c);
+      return [0, 0, 0]}, TMP_11.$$s = self, TMP_11), $a).call($c);
+      self.formula_gravity = ($a = ($d = self).$lambda, $a.$$p = (TMP_12 = function(x){var self = TMP_12.$$s || this;
+if (x == null) x = nil;
+      return [0, 0, $rb_times(g, (x['$**'](2)))]}, TMP_12.$$s = self, TMP_12), $a).call($d);
+      self.gravity = true;
+      return self;
+    };
+
+    def.$drilling = function(size, length) {
+      var $a, $b, TMP_13, $c, TMP_14, self = this, speed = nil, rot_speed = nil;
+
+      self.life = $hash2(["ss", "s", "m", "l"], {"ss": $hash2(["ss", "s", "l"], {"ss": 2, "s": 15, "l": 30}), "s": $hash2(["ss", "s", "l"], {"ss": 2, "s": 16, "l": 33}), "m": $hash2(["ss", "s", "l"], {"ss": 3, "s": 20, "l": 40}), "l": $hash2(["ss", "s", "l"], {"ss": 3, "s": 25, "l": 50})})['$[]'](size)['$[]'](length);
+      speed = $hash2(["ss", "s", "m", "l"], {"ss": 1.3, "s": $rb_divide(2, self.$sqrt(3)), "m": 1, "l": 0.8})['$[]'](size);
+      rot_speed = $hash2(["ss", "s", "m", "l"], {"ss": $hash2(["ss", "s", "l"], {"ss": $rb_divide($rb_times($scope.get('PI'), 22), 15), "s": $rb_divide($rb_times($scope.get('PI'), 8), 15), "l": $rb_divide($rb_times($scope.get('PI'), 4), 15)}), "s": $hash2(["ss", "s", "l"], {"ss": 2.5, "s": 1.5, "l": 0.75}), "m": $hash2(["ss", "s", "l"], {"ss": $rb_divide($rb_times($scope.get('PI'), 2), 3), "s": $rb_divide($rb_times($scope.get('PI'), 2), 5), "l": $rb_divide($rb_times($scope.get('PI'), 1), 5)}), "l": $hash2(["ss", "s", "l"], {"ss": $rb_divide($rb_times($scope.get('PI'), 2), 15), "s": $rb_divide($rb_times($rb_times(4, 2), $scope.get('PI')), 25), "l": $rb_divide($rb_times($rb_times(4, 2), $scope.get('PI')), 50)})})['$[]'](size)['$[]'](length);
+      self.formula_position = ($a = ($b = self).$lambda, $a.$$p = (TMP_13 = function(x){var self = TMP_13.$$s || this;
+if (x == null) x = nil;
+      return [$rb_times(speed, x), 0, 0]}, TMP_13.$$s = self, TMP_13), $a).call($b);
+      self.formula_direction = ($a = ($c = self).$lambda, $a.$$p = (TMP_14 = function(x){var self = TMP_14.$$s || this;
+if (x == null) x = nil;
+      return [0, 0, $rb_times(x, rot_speed)]}, TMP_14.$$s = self, TMP_14), $a).call($c);
       return self;
     };
 
     def.$circle = function(size, dia) {
-      var $a, $b, TMP_12, $c, TMP_13, self = this, rot_speed = nil;
+      var $a, $b, TMP_15, $c, TMP_16, self = this, rot_speed = nil;
 
       self.life = $hash2(["ss", "s", "m", "l"], {"ss": 20, "s": 24, "m": 28, "l": 32})['$[]'](size);
       rot_speed = $hash2(["ss", "s", "m", "l"], {"ss": $rb_divide($scope.get('PI')['$-@'](), 5), "s": $rb_divide($scope.get('PI')['$-@'](), 6), "m": $rb_divide($scope.get('PI')['$-@'](), 7), "l": $rb_divide($scope.get('PI')['$-@'](), 8)})['$[]'](size);
       dia = $hash2(["s", "m", "l"], {"s": 1, "m": 2, "l": 3})['$[]'](dia);
-      self.formula_position = ($a = ($b = self).$lambda, $a.$$p = (TMP_12 = function(x){var self = TMP_12.$$s || this;
+      self.formula_position = ($a = ($b = self).$lambda, $a.$$p = (TMP_15 = function(x){var self = TMP_15.$$s || this;
 if (x == null) x = nil;
-      return [dia, 0, 0]}, TMP_12.$$s = self, TMP_12), $a).call($b);
-      self.formula_direction = ($a = ($c = self).$lambda, $a.$$p = (TMP_13 = function(x){var self = TMP_13.$$s || this;
+      return [dia, 0, 0]}, TMP_15.$$s = self, TMP_15), $a).call($b);
+      self.formula_direction = ($a = ($c = self).$lambda, $a.$$p = (TMP_16 = function(x){var self = TMP_16.$$s || this;
 if (x == null) x = nil;
-      return [$rb_times(x, rot_speed), 0, 0]}, TMP_13.$$s = self, TMP_13), $a).call($c);
+      return [$rb_times(x, rot_speed), 0, 0]}, TMP_16.$$s = self, TMP_16), $a).call($c);
       self.same_fire_delay = 2;
       return self;
     };
 
     def.$ball = function(life) {
-      var $a, $b, TMP_14, $c, TMP_15, self = this;
+      var $a, $b, TMP_17, $c, TMP_18, self = this;
 
       self.life = $hash2(["s", "m", "l", "ll"], {"s": 60, "m": 120, "l": 240, "ll": 960})['$[]'](life);
-      self.formula_position = ($a = ($b = self).$lambda, $a.$$p = (TMP_14 = function(x){var self = TMP_14.$$s || this;
+      self.formula_position = ($a = ($b = self).$lambda, $a.$$p = (TMP_17 = function(x){var self = TMP_17.$$s || this;
 if (x == null) x = nil;
-      return [0, 0, 0]}, TMP_14.$$s = self, TMP_14), $a).call($b);
-      self.formula_direction = ($a = ($c = self).$lambda, $a.$$p = (TMP_15 = function(x){var self = TMP_15.$$s || this;
+      return [0, 0, 0]}, TMP_17.$$s = self, TMP_17), $a).call($b);
+      self.formula_direction = ($a = ($c = self).$lambda, $a.$$p = (TMP_18 = function(x){var self = TMP_18.$$s || this;
 if (x == null) x = nil;
-      return [0, 0, 0]}, TMP_15.$$s = self, TMP_15), $a).call($c);
+      return [0, 0, 0]}, TMP_18.$$s = self, TMP_18), $a).call($c);
       return self;
     };
 
     return (def.$spinball = function(speed) {
-      var $a, $b, TMP_16, $c, TMP_17, self = this, rot_speed = nil;
+      var $a, $b, TMP_19, $c, TMP_20, self = this, rot_speed = nil;
 
       self.life = 60;
       rot_speed = $hash2(["fast", "mid", "slow"], {"fast": $rb_divide($rb_times($scope.get('PI')['$-@'](), 3), 10), "mid": $rb_divide($rb_times($scope.get('PI')['$-@'](), 3), 20), "slow": $rb_divide($rb_times($scope.get('PI')['$-@'](), 3), 30)})['$[]'](speed);
-      self.formula_position = ($a = ($b = self).$lambda, $a.$$p = (TMP_16 = function(x){var self = TMP_16.$$s || this;
+      self.formula_position = ($a = ($b = self).$lambda, $a.$$p = (TMP_19 = function(x){var self = TMP_19.$$s || this;
 if (x == null) x = nil;
-      return [0, 0, 0]}, TMP_16.$$s = self, TMP_16), $a).call($b);
-      self.formula_direction = ($a = ($c = self).$lambda, $a.$$p = (TMP_17 = function(x){var self = TMP_17.$$s || this;
+      return [0, 0, 0]}, TMP_19.$$s = self, TMP_19), $a).call($b);
+      self.formula_direction = ($a = ($c = self).$lambda, $a.$$p = (TMP_20 = function(x){var self = TMP_20.$$s || this;
 if (x == null) x = nil;
-      return [$rb_times(x, rot_speed), 0, 0]}, TMP_17.$$s = self, TMP_17), $a).call($c);
+      return [$rb_times(x, rot_speed), 0, 0]}, TMP_20.$$s = self, TMP_20), $a).call($c);
       return self;
     }, nil) && 'spinball';
   })(self, null);
@@ -16251,7 +16276,7 @@ if (x == null) x = nil;
 
     var def = self.$$proto, $scope = self.$$scope;
 
-    return Opal.cdecl($scope, 'MODULE_LIST', [["[SS]弾丸:直進/長", false, "straight", "ss", "l"], ["[SS]弾丸:直進/短", false, "straight", "ss", "s"], ["[SS]弾丸:直進/極短", false, "straight", "ss", "ss"], ["[SS]きりもみ弾/長", false, "drilling", "ss", "l"], ["[SS]きりもみ弾/短", false, "drilling", "ss", "s"], ["[SS]きりもみ弾/極短", false, "drilling", "ss", "ss"], ["[SS]弾丸:回転/通常", false, "circle", "ss", "m"], ["[SS]弾丸:回転/広", false, "circle", "ss", "l"], ["[SS]弾丸:回転/狭い", false, "circle", "ss", "s"], ["[SS]弾丸:追従回転/通常", true, "circle", "ss", "m"], ["[SS]弾丸:追従回転/広", true, "circle", "ss", "l"], ["[SS]弾丸:追従回転/狭い", true, "circle", "ss", "s"], ["[S]弾丸:直進/長", false, "straight", "s", "l"], ["[S]弾丸:直進/短", false, "straight", "s", "s"], ["[S]弾丸:直進/極短", false, "straight", "s", "ss"], ["[S]きりもみ弾/長", false, "drilling", "s", "l"], ["[S]きりもみ弾/短", false, "drilling", "s", "s"], ["[S]きりもみ弾/極短", false, "drilling", "s", "ss"], ["[S]弾丸:回転/通常", false, "circle", "s", "m"], ["[S]弾丸:回転/広", false, "circle", "s", "l"], ["[S]弾丸:回転/狭い", false, "circle", "s", "s"], ["[S]弾丸:追従回転/通常", true, "circle", "s", "m"], ["[S]弾丸:追従回転/広", true, "circle", "s", "l"], ["[S]弾丸:追従回転/狭い", true, "circle", "s", "s"], ["[M]弾丸:直進/長", false, "straight", "m", "l"], ["[M]弾丸:直進/短", false, "straight", "m", "s"], ["[M]弾丸:直進/極短", false, "straight", "m", "ss"], ["[M]きりもみ弾/長", false, "drilling", "m", "l"], ["[M]きりもみ弾/短", false, "drilling", "m", "s"], ["[M]きりもみ弾/極短", false, "drilling", "m", "ss"], ["[M]弾丸:回転/通常", false, "circle", "m", "m"], ["[M]弾丸:回転/広", false, "circle", "m", "l"], ["[M]弾丸:回転/狭い", false, "circle", "m", "s"], ["[M]弾丸:追従回転/通常", true, "circle", "m", "m"], ["[M]弾丸:追従回転/広", true, "circle", "m", "l"], ["[M]弾丸:追従回転/狭い", true, "circle", "m", "s"], ["[M]制御:静止/生存時間普通", false, "ball", "m"], ["[M]制御:静止/生存時間極長", false, "ball", "ll"], ["[M]制御:静止/生存時間長", false, "ball", "l"], ["[M]制御:静止/生存時間短", false, "ball", "s"], ["[M]制御:追従/生存時間普通", true, "ball", "m"], ["[M]制御:追従/生存時間短", true, "ball", "s"], ["[M]制御:回転/速度普通", false, "spinball", "mid"], ["[M]制御:回転/速度遅", false, "spinball", "slow"], ["[M]制御:回転/速度速", false, "spinball", "fast"], ["[L]弾丸:直進/長", false, "straight", "l", "l"], ["[L]弾丸:直進/短", false, "straight", "l", "s"], ["[L]弾丸:直進/極短", false, "straight", "l", "ss"], ["[L]きりもみ弾/長", false, "drilling", "l", "l"], ["[L]きりもみ弾/短", false, "drilling", "l", "s"], ["[L]きりもみ弾/極短", false, "drilling", "l", "ss"], ["[L]弾丸:回転/通常", false, "circle", "l", "m"], ["[L]弾丸:回転/広", false, "circle", "l", "l"], ["[L]弾丸:回転/狭い", false, "circle", "l", "s"], ["[L]弾丸:追従回転/通常", true, "circle", "l", "m"], ["[L]弾丸:追従回転/広", true, "circle", "l", "l"], ["[L]弾丸:追従回転/狭い", true, "circle", "l", "s"]])
+    return Opal.cdecl($scope, 'MODULE_LIST', $hash(0, ["[SS]弾丸:直進/長", false, "straight", "ss", "l"], 1, ["[SS]弾丸:直進/短", false, "straight", "ss", "s"], 2, ["[SS]弾丸:直進/極短", false, "straight", "ss", "ss"], 3, ["[SS]きりもみ弾/長", false, "drilling", "ss", "l"], 4, ["[SS]きりもみ弾/短", false, "drilling", "ss", "s"], 5, ["[SS]きりもみ弾/極短", false, "drilling", "ss", "ss"], 6, ["[SS]弾丸:回転/通常", false, "circle", "ss", "m"], 7, ["[SS]弾丸:回転/広", false, "circle", "ss", "l"], 8, ["[SS]弾丸:回転/狭い", false, "circle", "ss", "s"], 9, ["[SS]弾丸:追従回転/通常", true, "circle", "ss", "m"], 10, ["[SS]弾丸:追従回転/広", true, "circle", "ss", "l"], 11, ["[SS]弾丸:追従回転/狭い", true, "circle", "ss", "s"], 12, ["[S]弾丸:直進/長", false, "straight", "s", "l"], 13, ["[S]弾丸:直進/短", false, "straight", "s", "s"], 14, ["[S]弾丸:直進/極短", false, "straight", "s", "ss"], 15, ["[S]きりもみ弾/長", false, "drilling", "s", "l"], 16, ["[S]きりもみ弾/短", false, "drilling", "s", "s"], 17, ["[S]きりもみ弾/極短", false, "drilling", "s", "ss"], 18, ["[S]弾丸:回転/通常", false, "circle", "s", "m"], 19, ["[S]弾丸:回転/広", false, "circle", "s", "l"], 20, ["[S]弾丸:回転/狭い", false, "circle", "s", "s"], 21, ["[S]弾丸:追従回転/通常", true, "circle", "s", "m"], 22, ["[S]弾丸:追従回転/広", true, "circle", "s", "l"], 23, ["[S]弾丸:追従回転/狭い", true, "circle", "s", "s"], 24, ["[M]弾丸:直進/長", false, "straight", "m", "l"], 25, ["[M]弾丸:直進/短", false, "straight", "m", "s"], 26, ["[M]弾丸:直進/極短", false, "straight", "m", "ss"], 27, ["[M]きりもみ弾/長", false, "drilling", "m", "l"], 28, ["[M]きりもみ弾/短", false, "drilling", "m", "s"], 29, ["[M]きりもみ弾/極短", false, "drilling", "m", "ss"], 30, ["[M]弾丸:回転/通常", false, "circle", "m", "m"], 31, ["[M]弾丸:回転/広", false, "circle", "m", "l"], 32, ["[M]弾丸:回転/狭い", false, "circle", "m", "s"], 33, ["[M]弾丸:追従回転/通常", true, "circle", "m", "m"], 34, ["[M]弾丸:追従回転/広", true, "circle", "m", "l"], 35, ["[M]弾丸:追従回転/狭い", true, "circle", "m", "s"], 36, ["[M]制御:静止/生存時間普通", false, "ball", "m"], 37, ["[M]制御:静止/生存時間極長", false, "ball", "ll"], 38, ["[M]制御:静止/生存時間長", false, "ball", "l"], 39, ["[M]制御:静止/生存時間短", false, "ball", "s"], 40, ["[M]制御:追従/生存時間普通", true, "ball", "m"], 41, ["[M]制御:追従/生存時間短", true, "ball", "s"], 42, ["[M]制御:回転/速度普通", false, "spinball", "mid"], 43, ["[M]制御:回転/速度遅", false, "spinball", "slow"], 44, ["[M]制御:回転/速度速", false, "spinball", "fast"], 45, ["[L]弾丸:直進/長", false, "straight", "l", "l"], 46, ["[L]弾丸:直進/短", false, "straight", "l", "s"], 47, ["[L]弾丸:直進/極短", false, "straight", "l", "ss"], 48, ["[L]きりもみ弾/長", false, "drilling", "l", "l"], 49, ["[L]きりもみ弾/短", false, "drilling", "l", "s"], 50, ["[L]きりもみ弾/極短", false, "drilling", "l", "ss"], 51, ["[L]弾丸:回転/通常", false, "circle", "l", "m"], 52, ["[L]弾丸:回転/広", false, "circle", "l", "l"], 53, ["[L]弾丸:回転/狭い", false, "circle", "l", "s"], 54, ["[L]弾丸:追従回転/通常", true, "circle", "l", "m"], 55, ["[L]弾丸:追従回転/広", true, "circle", "l", "l"], 56, ["[L]弾丸:追従回転/狭い", true, "circle", "l", "s"], 101, ["[LL]弾丸:重力/短", false, "straight_g", "ll"]))
   })(self, null);
 };
 
@@ -16646,7 +16671,7 @@ Opal.modules["page"] = function(Opal) {
   }
   var self = Opal.top, $scope = Opal, nil = Opal.nil, $breaker = Opal.breaker, $slice = Opal.slice, $gvars = Opal.gvars, $hash2 = Opal.hash2, $range = Opal.range;
 
-  Opal.add_stubs(['$require', '$[]', '$search', '$location', '$to_i', '$getElementById', '$document', '$with_index', '$each', '$join', '$map', '$rjust', '$to_s', '$length', '$createElement', '$id=', '$add', '$classList', '$[]=', '$style', '$innerHTML=', '$appendChild', '$getElementsByTagName', '$times', '$addEventListener', '$fire', '$clear_modules', '$clear_bullet', '$get_module_list', '$hash=', '$compress', '$hash', '$==', '$sub', '$set_module_list', '$decompress', '$value', '$size', '$value=', '$split', '$selectedIndex=', '$new', '$get_gun', '$init_bullet', '$init_tooltip', '$set_query']);
+  Opal.add_stubs(['$require', '$[]', '$search', '$location', '$to_i', '$getElementById', '$document', '$each', '$join', '$map', '$rjust', '$to_s', '$length', '$createElement', '$id=', '$add', '$classList', '$[]=', '$style', '$innerHTML=', '$appendChild', '$getElementsByTagName', '$times', '$addEventListener', '$fire', '$clear_modules', '$clear_bullet', '$get_module_list', '$hash=', '$compress', '$hash', '$==', '$sub', '$set_module_list', '$decompress', '$value', '$size', '$value=', '$split', '$selectedIndex=', '$new', '$get_gun', '$init_bullet', '$init_tooltip', '$set_query']);
   self.$require("opal");
   self.$require("native");
   self.$require("bullet");
@@ -16666,8 +16691,8 @@ Opal.modules["page"] = function(Opal) {
     }; return nil; })();
     module_container = $gvars.win.$document().$getElementById("module_container");
     module_list_html = "";
-    ($a = ($b = (($scope.get('BulletModule')).$$scope.get('MODULE_LIST')).$each()).$with_index, $a.$$p = (TMP_1 = function($c, index){var self = TMP_1.$$s || this;
-var id = $c[0];var type = $c[1];var following = $c[2];if (index == null) index = nil;
+    ($a = ($b = (($scope.get('BulletModule')).$$scope.get('MODULE_LIST'))).$each, $a.$$p = (TMP_1 = function(index, $c){var self = TMP_1.$$s || this;
+if (index == null) index = nil;var id = $c[0];var type = $c[1];var following = $c[2];
     return module_list_html = $rb_plus(module_list_html, "<option value=" + (index) + ">" + (id) + "</option>\n")}, TMP_1.$$s = self, TMP_1), $a).call($b);
     parent_html = ($a = ($d = ($range(1, $gvars.module_max, false))).$map, $a.$$p = (TMP_2 = function(i){var self = TMP_2.$$s || this, color = nil;
       if ($gvars.module_max == null) $gvars.module_max = nil;

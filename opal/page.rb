@@ -17,7 +17,7 @@ def page_setup
   module_container = $win.document.getElementById("module_container")
 
   module_list_html = ""
-  BulletModule::MODULE_LIST.each.with_index do |(id, type, following, *params), index|
+  BulletModule::MODULE_LIST.each do |index, (id, type, following, *params)|
     module_list_html += %[<option value=#{index}>#{id}</option>\n]
   end
 

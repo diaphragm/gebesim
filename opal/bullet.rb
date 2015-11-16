@@ -21,16 +21,16 @@ class Bullet
     @modules.all?{|k, v| v.dead?(frame)}
   end
 
-  def matrixes(frame, init_rot_vector=[0, 0, 0])
+  def matrixes(frame, gun_rot_vector=[0, 0, 0])
     ret = {}
-    @modules.map{|key, bm|
-      gamma, beta, alpha = init_rot_vector.map(&:to_f).map{|t| t*PI/180}
-      mi = Native(`new THREE.Matrix4()`).identity
-      euler = Native(`new THREE.Euler(alpha, beta, gamma, "ZYX")`)
-      mi.makeRotationFromEuler(euler)
 
+    gamma, beta, alpha = gun_rot_vector.map(&:to_f).map{|t| t*PI/180}
+    euler = Native(`new THREE.Euler(alpha, beta, gamma, "ZYX")`)
+    matrix_gun = Native(`new THREE.Matrix4()`).makeRotationFromEuler(euler)
+
+    @modules.map{|key, bm|
       available = bm.born?(frame) && bm.dead?(frame).!
-      ret[key] = [mi.multiply(bm.matrix(frame)), available]
+      ret[key] = [bm.matrix(frame, matrix_gun), available]
     }
     ret
   end
@@ -59,20 +59,20 @@ class BulletModule
     gamma, beta, alpha = init_rot_vector.map(&:to_f).map{|t| t*PI/180}
 
     euler = Native(`new THREE.Euler(alpha, beta, gamma, "ZYX")`)
-    mr = Native(`new THREE.Matrix4()`).makeRotationFromEuler(euler)
-    mi = Native(`new THREE.Matrix4()`).multiply(mr)
-    @initial_matrix = mi
+    @initial_matrix = Native(`new THREE.Matrix4()`).makeRotationFromEuler(euler)
 
     @parent = parent
     @timing = timing
 
     @log = []
 
-    # to be defined by child class
+    # to be defined by initialize methods
     @same_fire_delay = 1 # delay time when "fired at same time with xxx"
     @life = 0
     @formula_position = nil
     @formula_direction = nil
+    @formula_gravity = nil
+    @gravity = false
 
     name, following, type, *param = MODULE_LIST[index]
     @name = name
@@ -129,16 +129,26 @@ class BulletModule
     @initial_matrix.clone.multiply(mr).multiply(mt)
   end
 
-  def matrix(frame)
-    if @parent
+  def matrix(frame, matrix_gun)
+    m_tmp = if @parent
       parent_age = @following ? frame : frame - age(frame)
 
-      m_p = @parent.matrix(parent_age)
+      m_p = @parent.matrix(parent_age, matrix_gun)
       m_l = local_matrix(age(frame))
 
       m_p.multiply(m_l)
     else
-      local_matrix(frame)
+      matrix_gun.clone.multiply(local_matrix(frame))
+    end
+
+    if @gravity
+      # この座標系では-zが上,+zが下
+      xg, yg, zg = @formula_gravity[age(frame)]
+#      xg, yg, zg = 0, 0, 0.25*(age(frame)**2) # TO BE FIXED
+      mg = Native(`new THREE.Matrix4()`).makeTranslation(xg, yg, zg)
+      mg.multiply(m_tmp)
+    else
+      m_tmp
     end
   end
 
@@ -153,6 +163,28 @@ class BulletModule
 
     @formula_position = ->(x){[speed*x, 0, 0]}
     @formula_direction = ->(x){[0, 0, 0]}
+
+    self
+  end
+
+  def straight_g(size)
+    @life = {l: 93, ll: 93}[size] # l: 33+x = 90+30+6, ll: 30+20+x = 90+30+15+α よくわからんかった
+    speed = {l: 0.5, ll: 2/sqrt(3)*2/6}[size]
+    g = {l: 0.0104, ll: 0.0104}[size] # 0.01固定？微妙に違う気がする
+
+    # L
+    # z(6) = 1.5*sqrt(3) - 1.5*tan(55 deg)
+    # +19degで射出 → 0.5s後 z=0ちょっと上
+    # +38degで射出 → 1s後 z=0ちょっと下
+    # LL
+    # z(6) = 1.5*sqrt(3) - 1.5*tan(54 deg)
+    # +24degで射出 → 0.5s後 z=0ちょっと上
+    # +51degで射出 → 1s後 z=0ちょっと上
+
+    @formula_position = ->(x){[speed*x, 0, 0]}
+    @formula_direction = ->(x){[0, 0, 0]}
+    @formula_gravity = ->(x){[0, 0, g*(x**2)]}
+    @gravity = true
 
     self
   end
@@ -182,7 +214,7 @@ class BulletModule
 
   def circle(size, dia)
     @life = {ss: 20, s: 24, m: 28, l: 32}[size] # サイズによらず2回転する
-    
+
     rot_speed = {ss: -PI/5, s: -PI/6, m: -PI/7, l: -PI/8}[size]
     dia = {s: 1, m: 2, l: 3}[dia]
 
@@ -216,66 +248,68 @@ end
 
 
 class BulletModule
-  MODULE_LIST = [
-    # [name, following, type(method), params]
-    ["[SS]弾丸:直進/長", false, :straight, :ss, :l],
-    ["[SS]弾丸:直進/短", false, :straight, :ss, :s],
-    ["[SS]弾丸:直進/極短", false, :straight, :ss, :ss],
-    ["[SS]きりもみ弾/長", false, :drilling, :ss, :l],
-    ["[SS]きりもみ弾/短", false, :drilling, :ss, :s],
-    ["[SS]きりもみ弾/極短", false, :drilling, :ss, :ss],
-    ["[SS]弾丸:回転/通常", false, :circle, :ss, :m],
-    ["[SS]弾丸:回転/広", false, :circle, :ss, :l],
-    ["[SS]弾丸:回転/狭い", false, :circle, :ss, :s],
-    ["[SS]弾丸:追従回転/通常", true, :circle, :ss, :m],
-    ["[SS]弾丸:追従回転/広", true, :circle, :ss, :l],
-    ["[SS]弾丸:追従回転/狭い", true, :circle, :ss, :s],
-    ["[S]弾丸:直進/長", false, :straight, :s, :l],
-    ["[S]弾丸:直進/短", false, :straight, :s, :s],
-    ["[S]弾丸:直進/極短", false, :straight, :s, :ss],
-    ["[S]きりもみ弾/長", false, :drilling, :s, :l],
-    ["[S]きりもみ弾/短", false, :drilling, :s, :s],
-    ["[S]きりもみ弾/極短", false, :drilling, :s, :ss],
-    ["[S]弾丸:回転/通常", false, :circle, :s, :m],
-    ["[S]弾丸:回転/広", false, :circle, :s, :l],
-    ["[S]弾丸:回転/狭い", false, :circle, :s, :s],
-    ["[S]弾丸:追従回転/通常", true, :circle, :s, :m],
-    ["[S]弾丸:追従回転/広", true, :circle, :s, :l],
-    ["[S]弾丸:追従回転/狭い", true, :circle, :s, :s],
-    ["[M]弾丸:直進/長", false, :straight, :m, :l],
-    ["[M]弾丸:直進/短", false, :straight, :m, :s],
-    ["[M]弾丸:直進/極短", false, :straight, :m, :ss],
-    ["[M]きりもみ弾/長", false, :drilling, :m, :l],
-    ["[M]きりもみ弾/短", false, :drilling, :m, :s],
-    ["[M]きりもみ弾/極短", false, :drilling, :m, :ss],
-    ["[M]弾丸:回転/通常", false, :circle, :m, :m],
-    ["[M]弾丸:回転/広", false, :circle, :m, :l],
-    ["[M]弾丸:回転/狭い", false, :circle, :m, :s],
-    ["[M]弾丸:追従回転/通常", true, :circle, :m, :m],
-    ["[M]弾丸:追従回転/広", true, :circle, :m, :l],
-    ["[M]弾丸:追従回転/狭い", true, :circle, :m, :s],
-    ["[M]制御:静止/生存時間普通", false, :ball, :m, ],
-    ["[M]制御:静止/生存時間極長", false, :ball, :ll, ],
-    ["[M]制御:静止/生存時間長", false, :ball, :l, ],
-    ["[M]制御:静止/生存時間短", false, :ball, :s, ],
-    ["[M]制御:追従/生存時間普通", true, :ball, :m, ],
-    ["[M]制御:追従/生存時間短", true, :ball, :s, ],
-    ["[M]制御:回転/速度普通", false, :spinball, :mid, ],
-    ["[M]制御:回転/速度遅", false, :spinball, :slow, ],
-    ["[M]制御:回転/速度速", false, :spinball, :fast, ],
-    ["[L]弾丸:直進/長", false, :straight, :l, :l],
-    ["[L]弾丸:直進/短", false, :straight, :l, :s],
-    ["[L]弾丸:直進/極短", false, :straight, :l, :ss],
-    ["[L]きりもみ弾/長", false, :drilling, :l, :l],
-    ["[L]きりもみ弾/短", false, :drilling, :l, :s],
-    ["[L]きりもみ弾/極短", false, :drilling, :l, :ss],
-    ["[L]弾丸:回転/通常", false, :circle, :l, :m],
-    ["[L]弾丸:回転/広", false, :circle, :l, :l],
-    ["[L]弾丸:回転/狭い", false, :circle, :l, :s],
-    ["[L]弾丸:追従回転/通常", true, :circle, :l, :m],
-    ["[L]弾丸:追従回転/広", true, :circle, :l, :l],
-    ["[L]弾丸:追従回転/狭い", true, :circle, :l, :s],
-  ]
+  MODULE_LIST = {
+    # index =>  [name, following, type(method), params]
+    0 => ["[SS]弾丸:直進/長", false, :straight, :ss, :l],
+    1 => ["[SS]弾丸:直進/短", false, :straight, :ss, :s],
+    2 => ["[SS]弾丸:直進/極短", false, :straight, :ss, :ss],
+    3 => ["[SS]きりもみ弾/長", false, :drilling, :ss, :l],
+    4 => ["[SS]きりもみ弾/短", false, :drilling, :ss, :s],
+    5 => ["[SS]きりもみ弾/極短", false, :drilling, :ss, :ss],
+    6 => ["[SS]弾丸:回転/通常", false, :circle, :ss, :m],
+    7 => ["[SS]弾丸:回転/広", false, :circle, :ss, :l],
+    8 => ["[SS]弾丸:回転/狭い", false, :circle, :ss, :s],
+    9 => ["[SS]弾丸:追従回転/通常", true, :circle, :ss, :m],
+    10 => ["[SS]弾丸:追従回転/広", true, :circle, :ss, :l],
+    11 => ["[SS]弾丸:追従回転/狭い", true, :circle, :ss, :s],
+    12 => ["[S]弾丸:直進/長", false, :straight, :s, :l],
+    13 => ["[S]弾丸:直進/短", false, :straight, :s, :s],
+    14 => ["[S]弾丸:直進/極短", false, :straight, :s, :ss],
+    15 => ["[S]きりもみ弾/長", false, :drilling, :s, :l],
+    16 => ["[S]きりもみ弾/短", false, :drilling, :s, :s],
+    17 => ["[S]きりもみ弾/極短", false, :drilling, :s, :ss],
+    18 => ["[S]弾丸:回転/通常", false, :circle, :s, :m],
+    19 => ["[S]弾丸:回転/広", false, :circle, :s, :l],
+    20 => ["[S]弾丸:回転/狭い", false, :circle, :s, :s],
+    21 => ["[S]弾丸:追従回転/通常", true, :circle, :s, :m],
+    22 => ["[S]弾丸:追従回転/広", true, :circle, :s, :l],
+    23 => ["[S]弾丸:追従回転/狭い", true, :circle, :s, :s],
+    24 => ["[M]弾丸:直進/長", false, :straight, :m, :l],
+    25 => ["[M]弾丸:直進/短", false, :straight, :m, :s],
+    26 => ["[M]弾丸:直進/極短", false, :straight, :m, :ss],
+    27 => ["[M]きりもみ弾/長", false, :drilling, :m, :l],
+    28 => ["[M]きりもみ弾/短", false, :drilling, :m, :s],
+    29 => ["[M]きりもみ弾/極短", false, :drilling, :m, :ss],
+    30 => ["[M]弾丸:回転/通常", false, :circle, :m, :m],
+    31 => ["[M]弾丸:回転/広", false, :circle, :m, :l],
+    32 => ["[M]弾丸:回転/狭い", false, :circle, :m, :s],
+    33 => ["[M]弾丸:追従回転/通常", true, :circle, :m, :m],
+    34 => ["[M]弾丸:追従回転/広", true, :circle, :m, :l],
+    35 => ["[M]弾丸:追従回転/狭い", true, :circle, :m, :s],
+    36 => ["[M]制御:静止/生存時間普通", false, :ball, :m, ],
+    37 => ["[M]制御:静止/生存時間極長", false, :ball, :ll, ],
+    38 => ["[M]制御:静止/生存時間長", false, :ball, :l, ],
+    39 => ["[M]制御:静止/生存時間短", false, :ball, :s, ],
+    40 => ["[M]制御:追従/生存時間普通", true, :ball, :m, ],
+    41 => ["[M]制御:追従/生存時間短", true, :ball, :s, ],
+    42 => ["[M]制御:回転/速度普通", false, :spinball, :mid, ],
+    43 => ["[M]制御:回転/速度遅", false, :spinball, :slow, ],
+    44 => ["[M]制御:回転/速度速", false, :spinball, :fast, ],
+    45 => ["[L]弾丸:直進/長", false, :straight, :l, :l],
+    46 => ["[L]弾丸:直進/短", false, :straight, :l, :s],
+    47 => ["[L]弾丸:直進/極短", false, :straight, :l, :ss],
+    48 => ["[L]きりもみ弾/長", false, :drilling, :l, :l],
+    49 => ["[L]きりもみ弾/短", false, :drilling, :l, :s],
+    50 => ["[L]きりもみ弾/極短", false, :drilling, :l, :ss],
+    51 => ["[L]弾丸:回転/通常", false, :circle, :l, :m],
+    52 => ["[L]弾丸:回転/広", false, :circle, :l, :l],
+    53 => ["[L]弾丸:回転/狭い", false, :circle, :l, :s],
+    54 => ["[L]弾丸:追従回転/通常", true, :circle, :l, :m],
+    55 => ["[L]弾丸:追従回転/広", true, :circle, :l, :l],
+    56 => ["[L]弾丸:追従回転/狭い", true, :circle, :l, :s],
+    101 => ["[L]弾丸:重力/短", false, :straight_g, :l],
+    102 => ["[LL]弾丸:重力/短", false, :straight_g, :ll],
+  }
 end
 
 
