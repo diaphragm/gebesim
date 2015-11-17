@@ -76,7 +76,7 @@ def init_anime
   $scene.add(plane.to_n)
 
   grid_xz = Native(` new THREE.GridHelper( 20000, 100 )`)
-  grid_xz.material.opacity = 0.1
+  grid_xz.material.opacity = 0.15
   grid_xz.material.transparent = true
   $scene.add(grid_xz)
 

@@ -70,7 +70,7 @@ class BulletModule
     @same_fire_delay = 1 # delay time when "fired at same time with xxx"
     @life = 0
     @formula_position = nil
-    @formula_direction = nil
+    @formula_rotation = nil
     @formula_gravity = nil
     @gravity = false
 
@@ -120,13 +120,13 @@ class BulletModule
     frame = [age, @life].min
 
     x, y, z = @formula_position[frame]
-    gamma, beta, alpha = @formula_direction[frame]
+    gamma, beta, alpha = @formula_rotation[frame]
 
     euler = Native(`new THREE.Euler(alpha, beta, gamma, "ZYX")`)
     mr = Native(`new THREE.Matrix4()`).makeRotationFromEuler(euler)
     mt = Native(`new THREE.Matrix4()`).makeTranslation(x, y, z)
 
-    @initial_matrix.clone.multiply(mr).multiply(mt)
+    @initial_matrix.clone.multiply(mt).multiply(mr)
   end
 
   def matrix(frame, matrix_gun)
@@ -161,8 +161,8 @@ class BulletModule
     }[size][length]
     speed = {ss: 1.5, s: 2/sqrt(3), m: 1, l: 0.8}[size]
 
+    @formula_rotation = ->(x){[0, 0, 0]}
     @formula_position = ->(x){[speed*x, 0, 0]}
-    @formula_direction = ->(x){[0, 0, 0]}
 
     self
   end
@@ -170,7 +170,7 @@ class BulletModule
   def straight_g(size)
     @life = {l: 93, ll: 93}[size] # l: 33+x = 90+30+6, ll: 30+20+x = 90+30+15+α よくわからんかった
     speed = {l: 0.5, ll: 2/sqrt(3)*2/6}[size]
-    g = {l: 0.0104, ll: 0.0104}[size] # 0.01固定？微妙に違う気がする
+    g = {l: 0.021/2, ll: 0.021/2}[size] # 0.01固定？微妙に違う気がする
 
     # L
     # z(6) = 1.5*sqrt(3) - 1.5*tan(55 deg)
@@ -181,8 +181,8 @@ class BulletModule
     # +24degで射出 → 0.5s後 z=0ちょっと上
     # +51degで射出 → 1s後 z=0ちょっと上
 
+    @formula_rotation = ->(x){[0, 0, 0]}
     @formula_position = ->(x){[speed*x, 0, 0]}
-    @formula_direction = ->(x){[0, 0, 0]}
     @formula_gravity = ->(x){[0, 0, g*(x**2)]}
     @gravity = true
 
@@ -206,10 +206,51 @@ class BulletModule
       l: {ss: PI*2/15, s: 4*2*PI/25, l: 4*2*PI/50}, # 1モジュールで4回転が基本っぽい？
     }[size][length]
 
+    @formula_rotation = ->(x){[0, 0, x*rot_speed]}
     @formula_position = ->(x){[speed*x, 0, 0]}
-    @formula_direction = ->(x){[0, 0, x*rot_speed]}
 
     self
+  end
+
+  def curve(size, curve_pos)
+    @life = {
+      near: {ss: 29, s: 29, m: 34, l:41},
+      mid: {ss: 27, s: 27, m: 31, l:38},
+    }[curve_pos][size]
+    base_speed = {ss: 2/sqrt(3), s: 2/sqrt(3), m: 1, l: 0.8}[size] # 何故かSSとSは同じ速さ
+    # curve = {
+    #   near: [60, 60, 54, 41, 22, -3], # -3?
+    #   mid: [15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 56-44, 26-22, 43-45, 13-25], # 13fまで一定,弾速もstraightと同じ？
+    #   far: [],
+    # }[curve_pos]
+    curve_start = {
+      near: {ss: 0, s: 0, m: 0, l:0},
+      # mid: {ss: 13, s: 13, m: 14, l:18},
+      # mid: {ss: 12, s: 12, m: 14, l:17},
+      mid: {ss: 12, s: 12, m: 14, l:17},
+    }[curve_pos][size]
+    curve = {
+      near: [60]*curve_start + [60, 60, 54, 41, 22, -3], # -3?
+      # mid: [15]*curve_start + [56-44, 26-22, 43-45, 13-25, 13-28], # 13fまで一定,弾速もstraightと同じ？
+      mid: [15]*curve_start + [56-44, 26-22, 43-45, 13-28], # 要再測定
+      far: [],
+    }[curve_pos]
+    curve_speed = 0.5 # 湾曲部のスピードはカーブによらず一定っぽい
+
+    @formula_rotation = ->(t){
+      b = curve.fetch(t, curve.last) * PI/180
+      [0, b, 0]
+    }
+    @formula_position = ->(t){
+      x, y, z = 0, 0, 0
+      (1..t).each do |i|
+        s = (curve_start < i && i < curve.size) ? curve_speed : base_speed
+        b = curve.fetch(i, curve.last) * PI/180
+        x += s * cos(b)
+        z -= s * sin(b)
+      end
+      [x, y, z]
+    }
   end
 
   def circle(size, dia)
@@ -218,8 +259,8 @@ class BulletModule
     rot_speed = {ss: -PI/5, s: -PI/6, m: -PI/7, l: -PI/8}[size]
     dia = {s: 1, m: 2, l: 3}[dia]
 
-    @formula_position = ->(x){[dia, 0, 0]}
-    @formula_direction = ->(x){[x*rot_speed, 0, 0]}
+    @formula_rotation = ->(x){[x*rot_speed, 0, 0]}
+    @formula_position = ->(x){[dia*cos(x*rot_speed), dia*sin(x*rot_speed), 0]}
     @same_fire_delay = 2
 
     self
@@ -228,8 +269,8 @@ class BulletModule
   def ball(life)
     @life = {s: 60, m: 120, l: 240, ll: 960}[life] # maybe
 
+    @formula_rotation = ->(x){[0,0,0]}
     @formula_position = ->(x){[0,0,0]}
-    @formula_direction = ->(x){[0,0,0]}
 
     self
   end
@@ -238,8 +279,8 @@ class BulletModule
     @life = 60
     rot_speed = {fast: -PI*3/10, mid: -PI*3/20, slow: -PI*3/30}[speed] # 謎の回転速度
 
+    @formula_rotation = ->(x){[x*rot_speed, 0, 0]}
     @formula_position = ->(x){[0,0,0]}
-    @formula_direction = ->(x){[x*rot_speed, 0, 0]}
 
     self
   end
@@ -309,6 +350,14 @@ class BulletModule
     56 => ["[L]弾丸:追従回転/狭い", true, :circle, :l, :s],
     101 => ["[L]弾丸:重力/短", false, :straight_g, :l],
     102 => ["[LL]弾丸:重力/短", false, :straight_g, :ll],
+    111 => ["[SS]弾丸:湾曲/手前で", false, :curve, :ss, :near],
+    112 => ["[S]弾丸:湾曲/手前で", false, :curve, :s, :near],
+    113 => ["[M]弾丸:湾曲/手前で", false, :curve, :m, :near],
+    114 => ["[L]弾丸:湾曲/手前で", false, :curve, :l, :near],
+    115 => ["[SS]弾丸:湾曲/中間で", false, :curve, :ss, :mid],
+    116 => ["[S]弾丸:湾曲/中間で", false, :curve, :s, :mid],
+    117 => ["[M]弾丸:湾曲/中間で", false, :curve, :m, :mid],
+    118 => ["[L]弾丸:湾曲/中間で", false, :curve, :l, :mid],
   }
 end
 
