@@ -365,16 +365,16 @@ class BulletModule
     54 => ["[L]弾丸:追従回転/通常", true, :circle, :l, :m],
     55 => ["[L]弾丸:追従回転/広", true, :circle, :l, :l],
     56 => ["[L]弾丸:追従回転/狭い", true, :circle, :l, :s],
-    101 => ["[L]弾丸:重力/短", false, :straight_g, :l],
-    102 => ["[LL]弾丸:重力/短", false, :straight_g, :ll],
+    101 => ["[L]弾丸:重力/短(β)", false, :straight_g, :l],
+    102 => ["[LL]弾丸:重力/短(β)", false, :straight_g, :ll],
     111 => ["[SS]弾丸:湾曲/手前で", false, :curve, :ss, :near],
     112 => ["[S]弾丸:湾曲/手前で", false, :curve, :s, :near],
     113 => ["[M]弾丸:湾曲/手前で", false, :curve, :m, :near],
     114 => ["[L]弾丸:湾曲/手前で", false, :curve, :l, :near],
-    115 => ["[SS]弾丸:湾曲/中間で", false, :curve, :ss, :mid],
-    116 => ["[S]弾丸:湾曲/中間で", false, :curve, :s, :mid],
-    117 => ["[M]弾丸:湾曲/中間で", false, :curve, :m, :mid],
-    118 => ["[L]弾丸:湾曲/中間で", false, :curve, :l, :mid],
+    115 => ["[SS]弾丸:湾曲/中間で(β)", false, :curve, :ss, :mid],
+    116 => ["[S]弾丸:湾曲/中間で(β)", false, :curve, :s, :mid],
+    117 => ["[M]弾丸:湾曲/中間で(β)", false, :curve, :m, :mid],
+    118 => ["[L]弾丸:湾曲/中間で(β)", false, :curve, :l, :mid],
   }
 end
 
