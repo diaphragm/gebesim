@@ -16006,7 +16006,7 @@ Opal.modules["bullet"] = function(Opal) {
   }
   var self = Opal.top, $scope = Opal, nil = Opal.nil, $breaker = Opal.breaker, $slice = Opal.slice, $klass = Opal.klass, $hash2 = Opal.hash2, $range = Opal.range, $hash = Opal.hash;
 
-  Opal.add_stubs(['$require', '$include', '$attr_reader', '$each', '$new', '$[]', '$[]=', '$all?', '$dead?', '$map', '$to_proc', '$Native', '$makeRotationFromEuler', '$born?', '$!', '$matrix', '$each_with_object', '$<<', '$matrixes', '$__send__', '$same_fire_delay', '$life', '$age', '$delay', '$min', '$makeTranslation', '$multiply', '$clone', '$local_matrix', '$sqrt', '$lambda', '$**', '$fetch', '$last', '$size', '$cos', '$sin', '$-@']);
+  Opal.add_stubs(['$require', '$include', '$attr_reader', '$each', '$new', '$[]', '$[]=', '$all?', '$dead?', '$map', '$to_proc', '$Native', '$makeRotationFromEuler', '$matrix_gun=', '$born?', '$!', '$matrix', '$each_with_object', '$<<', '$matrixes', '$__send__', '$same_fire_delay', '$life', '$age', '$delay', '$min', '$makeTranslation', '$multiply', '$clone', '$local_matrix', '$sqrt', '$lambda', '$**', '$fetch', '$last', '$size', '$cos', '$sin', '$-@']);
   self.$require("opal");
   self.$require("native");
   self.$require("math");
@@ -16040,7 +16040,7 @@ if (k == null) k = nil;if (v == null) v = nil;
     };
 
     def.$matrixes = function(frame, gun_rot_vector) {
-      var $a, $b, $c, TMP_3, $d, $e, TMP_4, self = this, ret = nil, gamma = nil, beta = nil, alpha = nil, euler = nil, matrix_gun = nil;
+      var $a, $b, $c, TMP_3, $d, $e, TMP_4, TMP_5, self = this, ret = nil, gamma = nil, beta = nil, alpha = nil, euler = nil, matrix_gun = nil;
 
       if (gun_rot_vector == null) {
         gun_rot_vector = [0, 0, 0]
@@ -16051,27 +16051,30 @@ if (t == null) t = nil;
       return $rb_divide($rb_times(t, $scope.get('PI')), 180)}, TMP_3.$$s = self, TMP_3), $b).call($c)), gamma = ($a[0] == null ? nil : $a[0]), beta = ($a[1] == null ? nil : $a[1]), alpha = ($a[2] == null ? nil : $a[2]);
       euler = self.$Native(new THREE.Euler(alpha, beta, gamma, "ZYX"));
       matrix_gun = self.$Native(new THREE.Matrix4()).$makeRotationFromEuler(euler);
-      ($a = ($b = self.modules).$map, $a.$$p = (TMP_4 = function(key, bm){var self = TMP_4.$$s || this, $a, available = nil;
+      ($a = ($b = self.modules).$each, $a.$$p = (TMP_4 = function(key, bm){var self = TMP_4.$$s || this, $a, $b;
+if (key == null) key = nil;if (bm == null) bm = nil;
+      return (($a = [matrix_gun]), $b = bm, $b['$matrix_gun='].apply($b, $a), $a[$a.length-1])}, TMP_4.$$s = self, TMP_4), $a).call($b);
+      ($a = ($d = self.modules).$each, $a.$$p = (TMP_5 = function(key, bm){var self = TMP_5.$$s || this, $a, available = nil;
 if (key == null) key = nil;if (bm == null) bm = nil;
       available = ($a = bm['$born?'](frame), $a !== false && $a !== nil ?bm['$dead?'](frame)['$!']() : $a);
-        return ret['$[]='](key, [bm.$matrix(frame, matrix_gun), available]);}, TMP_4.$$s = self, TMP_4), $a).call($b);
+        return ret['$[]='](key, [bm.$matrix(frame), available]);}, TMP_5.$$s = self, TMP_5), $a).call($d);
       return ret;
     };
 
     return (def.$fire = function(rot_vector) {
-      var $a, $b, TMP_5, $d, $e, TMP_6, self = this, ret = nil, frame = nil;
+      var $a, $b, TMP_6, $d, $e, TMP_7, self = this, ret = nil, frame = nil;
 
       if (rot_vector == null) {
         rot_vector = [0, 0, 0]
       }
-      ret = ($a = ($b = self.modules).$each_with_object, $a.$$p = (TMP_5 = function($c, s){var self = TMP_5.$$s || this;
+      ret = ($a = ($b = self.modules).$each_with_object, $a.$$p = (TMP_6 = function($c, s){var self = TMP_6.$$s || this;
 var k = $c[0];var v = $c[1];if (s == null) s = nil;
-      return s['$[]='](k, [])}, TMP_5.$$s = self, TMP_5), $a).call($b, $hash2([], {}));
+      return s['$[]='](k, [])}, TMP_6.$$s = self, TMP_6), $a).call($b, $hash2([], {}));
       frame = 0;
       while (!((($d = self['$dead?'](frame)) !== nil && (!$d.$$is_boolean || $d == true)))) {
-      ($d = ($e = self.$matrixes(frame, rot_vector)).$each, $d.$$p = (TMP_6 = function(k, v){var self = TMP_6.$$s || this;
+      ($d = ($e = self.$matrixes(frame, rot_vector)).$each, $d.$$p = (TMP_7 = function(k, v){var self = TMP_7.$$s || this;
 if (k == null) k = nil;if (v == null) v = nil;
-      return ret['$[]'](k)['$<<'](v)}, TMP_6.$$s = self, TMP_6), $d).call($e);
+      return ret['$[]'](k)['$<<'](v)}, TMP_7.$$s = self, TMP_7), $d).call($e);
       frame = $rb_plus(frame, 1);};
       return ret;
     }, nil) && 'fire';
@@ -16082,11 +16085,13 @@ if (k == null) k = nil;if (v == null) v = nil;
 
     var def = self.$$proto, $scope = self.$$scope;
 
-    def.parent = def.timing = def.life = def.formula_position = def.formula_rotation = def.initial_matrix = def.following = def.gravity = def.formula_gravity = nil;
+    def.parent = def.timing = def.life = def.formula_position = def.formula_rotation = def.initial_matrix = def.memo_matrix = def.following = def.matrix_gun = def.gravity = def.formula_gravity = nil;
+    self.$attr_reader("matrix_gun");
+
     self.$attr_reader("same_fire_delay", "life");
 
     def.$initialize = function(index, init_rot_vector, parent, timing) {
-      var $a, $b, $c, TMP_7, $d, $e, self = this, gamma = nil, beta = nil, alpha = nil, euler = nil, name = nil, following = nil, type = nil, param = nil;
+      var $a, $b, $c, TMP_8, $d, $e, self = this, gamma = nil, beta = nil, alpha = nil, euler = nil, name = nil, following = nil, type = nil, param = nil;
 
       if (parent == null) {
         parent = nil
@@ -16094,14 +16099,15 @@ if (k == null) k = nil;if (v == null) v = nil;
       if (timing == null) {
         timing = nil
       }
-      $a = Opal.to_ary(($b = ($c = ($d = ($e = init_rot_vector).$map, $d.$$p = "to_f".$to_proc(), $d).call($e)).$map, $b.$$p = (TMP_7 = function(t){var self = TMP_7.$$s || this;
+      $a = Opal.to_ary(($b = ($c = ($d = ($e = init_rot_vector).$map, $d.$$p = "to_f".$to_proc(), $d).call($e)).$map, $b.$$p = (TMP_8 = function(t){var self = TMP_8.$$s || this;
 if (t == null) t = nil;
-      return $rb_divide($rb_times(t, $scope.get('PI')), 180)}, TMP_7.$$s = self, TMP_7), $b).call($c)), gamma = ($a[0] == null ? nil : $a[0]), beta = ($a[1] == null ? nil : $a[1]), alpha = ($a[2] == null ? nil : $a[2]);
+      return $rb_divide($rb_times(t, $scope.get('PI')), 180)}, TMP_8.$$s = self, TMP_8), $b).call($c)), gamma = ($a[0] == null ? nil : $a[0]), beta = ($a[1] == null ? nil : $a[1]), alpha = ($a[2] == null ? nil : $a[2]);
       euler = self.$Native(new THREE.Euler(alpha, beta, gamma, "ZYX"));
       self.initial_matrix = self.$Native(new THREE.Matrix4()).$makeRotationFromEuler(euler);
       self.parent = parent;
       self.timing = timing;
-      self.log = [];
+      self.memo_matrix = [];
+      self.memo_gun = nil;
       self.same_fire_delay = 1;
       self.life = 0;
       self.formula_position = nil;
@@ -16112,6 +16118,13 @@ if (t == null) t = nil;
       self.name = name;
       self.following = following;
       return ($a = self).$__send__.apply($a, [type].concat(param));
+    };
+
+    def['$matrix_gun='] = function(matrix) {
+      var self = this;
+
+      self.memo_matrix = [];
+      return self.matrix_gun = matrix;
     };
 
     def.$delay = function() {
@@ -16158,94 +16171,98 @@ if (t == null) t = nil;
       return self.initial_matrix.$clone().$multiply(mt).$multiply(mr);
     };
 
-    def.$matrix = function(frame, matrix_gun) {
-      var $a, self = this, m_tmp = nil, parent_age = nil, m_p = nil, m_l = nil, xg = nil, yg = nil, zg = nil, mg = nil;
+    def.$matrix = function(frame) {
+      var $a, self = this, m = nil, m_tmp = nil, parent_age = nil, m_p = nil, m_l = nil, xg = nil, yg = nil, zg = nil, mg = nil;
 
+      if ((($a = m = self.memo_matrix['$[]'](frame)) !== nil && (!$a.$$is_boolean || $a == true))) {
+        return m.$clone()};
       m_tmp = (function() {if ((($a = self.parent) !== nil && (!$a.$$is_boolean || $a == true))) {
         parent_age = (function() {if ((($a = self.following) !== nil && (!$a.$$is_boolean || $a == true))) {
           return frame
           } else {
           return $rb_minus(frame, self.$age(frame))
         }; return nil; })();
-        m_p = self.parent.$matrix(parent_age, matrix_gun);
+        m_p = self.parent.$matrix(parent_age);
         m_l = self.$local_matrix(self.$age(frame));
         return m_p.$multiply(m_l);
         } else {
-        return matrix_gun.$clone().$multiply(self.$local_matrix(frame))
+        return self.matrix_gun.$clone().$multiply(self.$local_matrix(frame))
       }; return nil; })();
-      if ((($a = self.gravity) !== nil && (!$a.$$is_boolean || $a == true))) {
+      m = (function() {if ((($a = self.gravity) !== nil && (!$a.$$is_boolean || $a == true))) {
         $a = Opal.to_ary(self.formula_gravity['$[]'](self.$age(frame))), xg = ($a[0] == null ? nil : $a[0]), yg = ($a[1] == null ? nil : $a[1]), zg = ($a[2] == null ? nil : $a[2]);
         mg = self.$Native(new THREE.Matrix4()).$makeTranslation(xg, yg, zg);
         return mg.$multiply(m_tmp);
         } else {
         return m_tmp
-      };
+      }; return nil; })();
+      self.memo_matrix['$[]='](frame, m.$clone());
+      return m;
     };
 
     def.$straight = function(size, length) {
-      var $a, $b, TMP_8, $c, TMP_9, self = this, speed = nil;
+      var $a, $b, TMP_9, $c, TMP_10, self = this, speed = nil;
 
       self.life = $hash2(["ss", "s", "m", "l"], {"ss": $hash2(["ss", "s", "l"], {"ss": 3, "s": 15, "l": 30}), "s": $hash2(["ss", "s", "l"], {"ss": 4, "s": 16, "l": 33}), "m": $hash2(["ss", "s", "l"], {"ss": 5, "s": 20, "l": 40}), "l": $hash2(["ss", "s", "l"], {"ss": 6, "s": 25, "l": 50})})['$[]'](size)['$[]'](length);
       speed = $hash2(["ss", "s", "m", "l"], {"ss": 1.5, "s": $rb_divide(2, self.$sqrt(3)), "m": 1, "l": 0.8})['$[]'](size);
-      self.formula_rotation = ($a = ($b = self).$lambda, $a.$$p = (TMP_8 = function(x){var self = TMP_8.$$s || this;
+      self.formula_rotation = ($a = ($b = self).$lambda, $a.$$p = (TMP_9 = function(x){var self = TMP_9.$$s || this;
 if (x == null) x = nil;
-      return [0, 0, 0]}, TMP_8.$$s = self, TMP_8), $a).call($b);
-      self.formula_position = ($a = ($c = self).$lambda, $a.$$p = (TMP_9 = function(x){var self = TMP_9.$$s || this;
+      return [0, 0, 0]}, TMP_9.$$s = self, TMP_9), $a).call($b);
+      self.formula_position = ($a = ($c = self).$lambda, $a.$$p = (TMP_10 = function(x){var self = TMP_10.$$s || this;
 if (x == null) x = nil;
-      return [$rb_times(speed, x), 0, 0]}, TMP_9.$$s = self, TMP_9), $a).call($c);
+      return [$rb_times(speed, x), 0, 0]}, TMP_10.$$s = self, TMP_10), $a).call($c);
       return self;
     };
 
     def.$straight_g = function(size) {
-      var $a, $b, TMP_10, $c, TMP_11, $d, TMP_12, self = this, speed = nil, g = nil;
+      var $a, $b, TMP_11, $c, TMP_12, $d, TMP_13, self = this, speed = nil, g = nil;
 
       self.life = $hash2(["l", "ll"], {"l": 93, "ll": 93})['$[]'](size);
       speed = $hash2(["l", "ll"], {"l": 0.5, "ll": $rb_divide($rb_times($rb_divide(2, self.$sqrt(3)), 2), 6)})['$[]'](size);
       g = $hash2(["l", "ll"], {"l": $rb_divide(0.021, 2), "ll": $rb_divide(0.021, 2)})['$[]'](size);
-      self.formula_rotation = ($a = ($b = self).$lambda, $a.$$p = (TMP_10 = function(x){var self = TMP_10.$$s || this;
+      self.formula_rotation = ($a = ($b = self).$lambda, $a.$$p = (TMP_11 = function(x){var self = TMP_11.$$s || this;
 if (x == null) x = nil;
-      return [0, 0, 0]}, TMP_10.$$s = self, TMP_10), $a).call($b);
-      self.formula_position = ($a = ($c = self).$lambda, $a.$$p = (TMP_11 = function(x){var self = TMP_11.$$s || this;
+      return [0, 0, 0]}, TMP_11.$$s = self, TMP_11), $a).call($b);
+      self.formula_position = ($a = ($c = self).$lambda, $a.$$p = (TMP_12 = function(x){var self = TMP_12.$$s || this;
 if (x == null) x = nil;
-      return [$rb_times(speed, x), 0, 0]}, TMP_11.$$s = self, TMP_11), $a).call($c);
-      self.formula_gravity = ($a = ($d = self).$lambda, $a.$$p = (TMP_12 = function(x){var self = TMP_12.$$s || this;
+      return [$rb_times(speed, x), 0, 0]}, TMP_12.$$s = self, TMP_12), $a).call($c);
+      self.formula_gravity = ($a = ($d = self).$lambda, $a.$$p = (TMP_13 = function(x){var self = TMP_13.$$s || this;
 if (x == null) x = nil;
-      return [0, 0, $rb_times(g, (x['$**'](2)))]}, TMP_12.$$s = self, TMP_12), $a).call($d);
+      return [0, 0, $rb_times(g, (x['$**'](2)))]}, TMP_13.$$s = self, TMP_13), $a).call($d);
       self.gravity = true;
       return self;
     };
 
     def.$drilling = function(size, length) {
-      var $a, $b, TMP_13, $c, TMP_14, self = this, speed = nil, rot_speed = nil;
+      var $a, $b, TMP_14, $c, TMP_15, self = this, speed = nil, rot_speed = nil;
 
       self.life = $hash2(["ss", "s", "m", "l"], {"ss": $hash2(["ss", "s", "l"], {"ss": 2, "s": 15, "l": 30}), "s": $hash2(["ss", "s", "l"], {"ss": 2, "s": 16, "l": 33}), "m": $hash2(["ss", "s", "l"], {"ss": 3, "s": 20, "l": 40}), "l": $hash2(["ss", "s", "l"], {"ss": 3, "s": 25, "l": 50})})['$[]'](size)['$[]'](length);
       speed = $hash2(["ss", "s", "m", "l"], {"ss": 1.3, "s": $rb_divide(2, self.$sqrt(3)), "m": 1, "l": 0.8})['$[]'](size);
       rot_speed = $hash2(["ss", "s", "m", "l"], {"ss": $hash2(["ss", "s", "l"], {"ss": $rb_divide($rb_times($scope.get('PI'), 22), 15), "s": $rb_divide($rb_times($scope.get('PI'), 8), 15), "l": $rb_divide($rb_times($scope.get('PI'), 4), 15)}), "s": $hash2(["ss", "s", "l"], {"ss": 2.5, "s": 1.5, "l": 0.75}), "m": $hash2(["ss", "s", "l"], {"ss": $rb_divide($rb_times($scope.get('PI'), 2), 3), "s": $rb_divide($rb_times($scope.get('PI'), 2), 5), "l": $rb_divide($rb_times($scope.get('PI'), 1), 5)}), "l": $hash2(["ss", "s", "l"], {"ss": $rb_divide($rb_times($scope.get('PI'), 2), 15), "s": $rb_divide($rb_times($rb_times(4, 2), $scope.get('PI')), 25), "l": $rb_divide($rb_times($rb_times(4, 2), $scope.get('PI')), 50)})})['$[]'](size)['$[]'](length);
-      self.formula_rotation = ($a = ($b = self).$lambda, $a.$$p = (TMP_13 = function(x){var self = TMP_13.$$s || this;
+      self.formula_rotation = ($a = ($b = self).$lambda, $a.$$p = (TMP_14 = function(x){var self = TMP_14.$$s || this;
 if (x == null) x = nil;
-      return [0, 0, $rb_times(x, rot_speed)]}, TMP_13.$$s = self, TMP_13), $a).call($b);
-      self.formula_position = ($a = ($c = self).$lambda, $a.$$p = (TMP_14 = function(x){var self = TMP_14.$$s || this;
+      return [0, 0, $rb_times(x, rot_speed)]}, TMP_14.$$s = self, TMP_14), $a).call($b);
+      self.formula_position = ($a = ($c = self).$lambda, $a.$$p = (TMP_15 = function(x){var self = TMP_15.$$s || this;
 if (x == null) x = nil;
-      return [$rb_times(speed, x), 0, 0]}, TMP_14.$$s = self, TMP_14), $a).call($c);
+      return [$rb_times(speed, x), 0, 0]}, TMP_15.$$s = self, TMP_15), $a).call($c);
       return self;
     };
 
     def.$curve = function(size, curve_pos) {
-      var $a, $b, TMP_15, $c, TMP_16, self = this, base_speed = nil, curve_start = nil, curve = nil, curve_speed = nil;
+      var $a, $b, TMP_16, $c, TMP_17, self = this, base_speed = nil, curve_start = nil, curve = nil, curve_speed = nil;
 
       self.life = $hash2(["near", "mid"], {"near": $hash2(["ss", "s", "m", "l"], {"ss": 29, "s": 29, "m": 34, "l": 41}), "mid": $hash2(["ss", "s", "m", "l"], {"ss": 27, "s": 27, "m": 31, "l": 38})})['$[]'](curve_pos)['$[]'](size);
       base_speed = $hash2(["ss", "s", "m", "l"], {"ss": $rb_divide(2, self.$sqrt(3)), "s": $rb_divide(2, self.$sqrt(3)), "m": 1, "l": 0.8})['$[]'](size);
       curve_start = $hash2(["near", "mid"], {"near": $hash2(["ss", "s", "m", "l"], {"ss": 0, "s": 0, "m": 0, "l": 0}), "mid": $hash2(["ss", "s", "m", "l"], {"ss": 12, "s": 12, "m": 14, "l": 17})})['$[]'](curve_pos)['$[]'](size);
       curve = $hash2(["near", "mid", "far"], {"near": $rb_plus($rb_times([60], curve_start), [60, 60, 54, 41, 22, -3]), "mid": $rb_plus($rb_times([15], curve_start), [$rb_minus(56, 44), $rb_minus(26, 22), $rb_minus(43, 45), $rb_minus(13, 28)]), "far": []})['$[]'](curve_pos);
       curve_speed = 0.5;
-      self.formula_rotation = ($a = ($b = self).$lambda, $a.$$p = (TMP_15 = function(t){var self = TMP_15.$$s || this, b = nil;
+      self.formula_rotation = ($a = ($b = self).$lambda, $a.$$p = (TMP_16 = function(t){var self = TMP_16.$$s || this, b = nil;
 if (t == null) t = nil;
       b = $rb_divide($rb_times(curve.$fetch(t, curve.$last()), $scope.get('PI')), 180);
-        return [0, b, 0];}, TMP_15.$$s = self, TMP_15), $a).call($b);
-      return self.formula_position = ($a = ($c = self).$lambda, $a.$$p = (TMP_16 = function(t){var self = TMP_16.$$s || this, $a, $b, TMP_17, x = nil, y = nil, z = nil;
+        return [0, b, 0];}, TMP_16.$$s = self, TMP_16), $a).call($b);
+      return self.formula_position = ($a = ($c = self).$lambda, $a.$$p = (TMP_17 = function(t){var self = TMP_17.$$s || this, $a, $b, TMP_18, x = nil, y = nil, z = nil;
 if (t == null) t = nil;
       $a = [0, 0, 0], x = $a[0], y = $a[1], z = $a[2];
-        ($a = ($b = ($range(1, t, false))).$each, $a.$$p = (TMP_17 = function(i){var self = TMP_17.$$s || this, $a, $b, s = nil, b = nil;
+        ($a = ($b = ($range(1, t, false))).$each, $a.$$p = (TMP_18 = function(i){var self = TMP_18.$$s || this, $a, $b, s = nil, b = nil;
 if (i == null) i = nil;
         s = (function() {if ((($a = ((($b = $rb_lt(curve_start, i)) ? $rb_lt(i, curve.$size()) : $b))) !== nil && (!$a.$$is_boolean || $a == true))) {
             return curve_speed
@@ -16254,50 +16271,50 @@ if (i == null) i = nil;
           }; return nil; })();
           b = $rb_divide($rb_times(curve.$fetch(i, curve.$last()), $scope.get('PI')), 180);
           x = $rb_plus(x, $rb_times(s, self.$cos(b)));
-          return z = $rb_minus(z, $rb_times(s, self.$sin(b)));}, TMP_17.$$s = self, TMP_17), $a).call($b);
-        return [x, y, z];}, TMP_16.$$s = self, TMP_16), $a).call($c);
+          return z = $rb_minus(z, $rb_times(s, self.$sin(b)));}, TMP_18.$$s = self, TMP_18), $a).call($b);
+        return [x, y, z];}, TMP_17.$$s = self, TMP_17), $a).call($c);
     };
 
     def.$circle = function(size, dia) {
-      var $a, $b, TMP_18, $c, TMP_19, self = this, rot_speed = nil;
+      var $a, $b, TMP_19, $c, TMP_20, self = this, rot_speed = nil;
 
       self.life = $hash2(["ss", "s", "m", "l"], {"ss": 20, "s": 24, "m": 28, "l": 32})['$[]'](size);
       rot_speed = $hash2(["ss", "s", "m", "l"], {"ss": $rb_divide($scope.get('PI')['$-@'](), 5), "s": $rb_divide($scope.get('PI')['$-@'](), 6), "m": $rb_divide($scope.get('PI')['$-@'](), 7), "l": $rb_divide($scope.get('PI')['$-@'](), 8)})['$[]'](size);
       dia = $hash2(["s", "m", "l"], {"s": 1, "m": 2, "l": 3})['$[]'](dia);
-      self.formula_rotation = ($a = ($b = self).$lambda, $a.$$p = (TMP_18 = function(x){var self = TMP_18.$$s || this;
+      self.formula_rotation = ($a = ($b = self).$lambda, $a.$$p = (TMP_19 = function(x){var self = TMP_19.$$s || this;
 if (x == null) x = nil;
-      return [$rb_times(x, rot_speed), 0, 0]}, TMP_18.$$s = self, TMP_18), $a).call($b);
-      self.formula_position = ($a = ($c = self).$lambda, $a.$$p = (TMP_19 = function(x){var self = TMP_19.$$s || this;
+      return [$rb_times(x, rot_speed), 0, 0]}, TMP_19.$$s = self, TMP_19), $a).call($b);
+      self.formula_position = ($a = ($c = self).$lambda, $a.$$p = (TMP_20 = function(x){var self = TMP_20.$$s || this;
 if (x == null) x = nil;
-      return [$rb_times(dia, self.$cos($rb_times(x, rot_speed))), $rb_times(dia, self.$sin($rb_times(x, rot_speed))), 0]}, TMP_19.$$s = self, TMP_19), $a).call($c);
+      return [$rb_times(dia, self.$cos($rb_times(x, rot_speed))), $rb_times(dia, self.$sin($rb_times(x, rot_speed))), 0]}, TMP_20.$$s = self, TMP_20), $a).call($c);
       self.same_fire_delay = 2;
       return self;
     };
 
     def.$ball = function(life) {
-      var $a, $b, TMP_20, $c, TMP_21, self = this;
+      var $a, $b, TMP_21, $c, TMP_22, self = this;
 
       self.life = $hash2(["s", "m", "l", "ll"], {"s": 60, "m": 120, "l": 240, "ll": 960})['$[]'](life);
-      self.formula_rotation = ($a = ($b = self).$lambda, $a.$$p = (TMP_20 = function(x){var self = TMP_20.$$s || this;
+      self.formula_rotation = ($a = ($b = self).$lambda, $a.$$p = (TMP_21 = function(x){var self = TMP_21.$$s || this;
 if (x == null) x = nil;
-      return [0, 0, 0]}, TMP_20.$$s = self, TMP_20), $a).call($b);
-      self.formula_position = ($a = ($c = self).$lambda, $a.$$p = (TMP_21 = function(x){var self = TMP_21.$$s || this;
+      return [0, 0, 0]}, TMP_21.$$s = self, TMP_21), $a).call($b);
+      self.formula_position = ($a = ($c = self).$lambda, $a.$$p = (TMP_22 = function(x){var self = TMP_22.$$s || this;
 if (x == null) x = nil;
-      return [0, 0, 0]}, TMP_21.$$s = self, TMP_21), $a).call($c);
+      return [0, 0, 0]}, TMP_22.$$s = self, TMP_22), $a).call($c);
       return self;
     };
 
     return (def.$spinball = function(speed) {
-      var $a, $b, TMP_22, $c, TMP_23, self = this, rot_speed = nil;
+      var $a, $b, TMP_23, $c, TMP_24, self = this, rot_speed = nil;
 
       self.life = 60;
       rot_speed = $hash2(["fast", "mid", "slow"], {"fast": $rb_divide($rb_times($scope.get('PI')['$-@'](), 3), 10), "mid": $rb_divide($rb_times($scope.get('PI')['$-@'](), 3), 20), "slow": $rb_divide($rb_times($scope.get('PI')['$-@'](), 3), 30)})['$[]'](speed);
-      self.formula_rotation = ($a = ($b = self).$lambda, $a.$$p = (TMP_22 = function(x){var self = TMP_22.$$s || this;
+      self.formula_rotation = ($a = ($b = self).$lambda, $a.$$p = (TMP_23 = function(x){var self = TMP_23.$$s || this;
 if (x == null) x = nil;
-      return [$rb_times(x, rot_speed), 0, 0]}, TMP_22.$$s = self, TMP_22), $a).call($b);
-      self.formula_position = ($a = ($c = self).$lambda, $a.$$p = (TMP_23 = function(x){var self = TMP_23.$$s || this;
+      return [$rb_times(x, rot_speed), 0, 0]}, TMP_23.$$s = self, TMP_23), $a).call($b);
+      self.formula_position = ($a = ($c = self).$lambda, $a.$$p = (TMP_24 = function(x){var self = TMP_24.$$s || this;
 if (x == null) x = nil;
-      return [0, 0, 0]}, TMP_23.$$s = self, TMP_23), $a).call($c);
+      return [0, 0, 0]}, TMP_24.$$s = self, TMP_24), $a).call($c);
       return self;
     }, nil) && 'spinball';
   })(self, null);

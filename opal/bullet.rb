@@ -28,10 +28,13 @@ class Bullet
     euler = Native(`new THREE.Euler(alpha, beta, gamma, "ZYX")`)
     matrix_gun = Native(`new THREE.Matrix4()`).makeRotationFromEuler(euler)
 
-    @modules.map{|key, bm|
+    @modules.each do |key, bm|
+      bm.matrix_gun = matrix_gun
+    end
+    @modules.each do |key, bm|
       available = bm.born?(frame) && bm.dead?(frame).!
-      ret[key] = [bm.matrix(frame, matrix_gun), available]
-    }
+      ret[key] = [bm.matrix(frame), available]
+    end
     ret
   end
 
@@ -53,6 +56,7 @@ end
 
 
 class BulletModule
+  attr_reader :matrix_gun
   attr_reader :same_fire_delay, :life
 
   def initialize(index, init_rot_vector, parent=nil, timing=nil)
@@ -64,7 +68,8 @@ class BulletModule
     @parent = parent
     @timing = timing
 
-    @log = []
+    @memo_matrix = []
+    @memo_gun = nil
 
     # to be defined by initialize methods
     @same_fire_delay = 1 # delay time when "fired at same time with xxx"
@@ -79,6 +84,11 @@ class BulletModule
     @following = following
     __send__(type, *param)
 
+  end
+
+  def matrix_gun=(matrix)
+    @memo_matrix = []
+    @matrix_gun = matrix
   end
 
   def delay
@@ -129,19 +139,23 @@ class BulletModule
     @initial_matrix.clone.multiply(mt).multiply(mr)
   end
 
-  def matrix(frame, matrix_gun)
+  def matrix(frame)
+    if m = @memo_matrix[frame]
+      return m.clone
+    end
+
     m_tmp = if @parent
       parent_age = @following ? frame : frame - age(frame)
 
-      m_p = @parent.matrix(parent_age, matrix_gun)
+      m_p = @parent.matrix(parent_age)
       m_l = local_matrix(age(frame))
 
       m_p.multiply(m_l)
     else
-      matrix_gun.clone.multiply(local_matrix(frame))
+      @matrix_gun.clone.multiply(local_matrix(frame))
     end
 
-    if @gravity
+    m = if @gravity
       # この座標系では-zが上,+zが下
       xg, yg, zg = @formula_gravity[age(frame)]
 #      xg, yg, zg = 0, 0, 0.25*(age(frame)**2) # TO BE FIXED
@@ -150,6 +164,9 @@ class BulletModule
     else
       m_tmp
     end
+
+    @memo_matrix[frame] = m.clone
+    m
   end
 
   def straight(size, length)
