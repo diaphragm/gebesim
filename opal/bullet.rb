@@ -143,7 +143,7 @@ class BulletModule
     if m = @memo_matrix[frame]
       return m.clone
     end
-    
+
     m_p = if @parent
       parent_frame = @following ? frame : frame - age(frame)
       @parent.matrix(parent_frame)
@@ -156,9 +156,9 @@ class BulletModule
       m_p_pos = Native(`new THREE.Matrix4()`).copyPosition(m_p)
       e_p = Native(`new THREE.Euler()`).setFromRotationMatrix(m_p, "ZYX")
       a, b, g = e_p.x, e_p.y, e_p.z
-      
+
       g = (b == 0) ? 0 : g # 実機での謎の挙動(ジンバルロック？)再現
-      
+
       m_pn = Native(`new THREE.Matrix4()`).makeRotationZ(g)
       m_p_pos.multiply(m_pn).multiply(m_l)
     else
@@ -199,12 +199,14 @@ class BulletModule
   def straight_g(size)
     @life = {l: 93, ll: 93}[size] # l: 33+x = 90+30+6, ll: 30+20+x = 90+30+15+α よくわからんかった
     speed = {l: 0.5, ll: 2/sqrt(3)*2/6}[size]
-    g = {l: 0.021/2, ll: 0.021/2}[size] # 0.01固定？微妙に違う気がする
+    g = {l: 0.01022, ll: 0.01022}[size] # 0.01固定？微妙に違う気がする
 
     # L
     # z(6) = 1.5*sqrt(3) - 1.5*tan(55 deg)
     # +19degで射出 → 0.5s後 z=0ちょっと上
     # +38degで射出 → 1s後 z=0ちょっと下
+    # +90degで射出 → sin(65deg)*2 = -x*45^2 + 0.5*45+0 => x=0.010216
+    #
     # LL
     # z(6) = 1.5*sqrt(3) - 1.5*tan(54 deg)
     # +24degで射出 → 0.5s後 z=0ちょっと上
@@ -245,6 +247,7 @@ class BulletModule
     @life = {
       near: {ss: 29, s: 29, m: 34, l:41},
       mid: {ss: 27, s: 27, m: 31, l:38},
+      far: {ss: 28, s: 28, m: 33, l: 40}, # nearより1f短いっぽい？
     }[curve_pos][size]
     base_speed = {ss: 2/sqrt(3), s: 2/sqrt(3), m: 1, l: 0.8}[size] # 何故かSSとSは同じ速さ
     # curve = {
@@ -257,12 +260,13 @@ class BulletModule
       # mid: {ss: 13, s: 13, m: 14, l:18},
       # mid: {ss: 12, s: 12, m: 14, l:17},
       mid: {ss: 12, s: 12, m: 14, l:17},
+      far: {ss: 23, s: 23, m: 28, l: 35},
     }[curve_pos][size]
     curve = {
-      near: [60]*curve_start + [60, 60, 54, 41, 22, -3], # -3?
+      near: [60]*(curve_start+1) + [60, 54, 41, 22, -3], # -3?
       # mid: [15]*curve_start + [56-44, 26-22, 43-45, 13-25, 13-28], # 13fまで一定,弾速もstraightと同じ？
-      mid: [15]*curve_start + [56-44, 26-22, 43-45, 13-28], # 要再測定
-      far: [],
+      mid: [15]*(curve_start+1) + [56-44, 26-22, 43-45, 13-28], # 要再測定
+      far: [3]*(curve_start+1) + [3, -22, -41, -54, -60], # nearの逆
     }[curve_pos]
     curve_speed = 0.5 # 湾曲部のスピードはカーブによらず一定っぽい
 
@@ -295,19 +299,24 @@ class BulletModule
     self
   end
 
-  def ball(life, facing=nil)
+  def ball(life)
     @life = {s: 60, m: 120, l: 240, ll: 960}[life] # maybe
 
     @formula_rotation = ->(x){[0,0,0]}
     @formula_position = ->(x){[0,0,0]}
-    
-    if facing
-      @ignore_parent_rot = true
-      @formula_rotation = {
-        up: ->(x){[0,PI/2,0]},
-        down: ->(x){[0,-PI/2,0]},
-      }[facing]
-    end
+
+    self
+  end
+
+  def facingball(life, facing)
+    @life = {s: 15, m: 30, l: 60, ll: 960}[life] # llだけ普通の静止と同じという意味のわからなさ
+
+    @formula_rotation = {
+      up: ->(x){[0,PI/2,0]},
+      down: ->(x){[0,-PI/2,0]},
+    }[facing]
+    @formula_position = ->(x){[0,0,0]}
+    @ignore_parent_rot = true
 
     self
   end
@@ -340,6 +349,9 @@ class BulletModule
     9 => ["[SS]弾丸:追従回転/通常", true, :circle, :ss, :m],
     10 => ["[SS]弾丸:追従回転/広", true, :circle, :ss, :l],
     11 => ["[SS]弾丸:追従回転/狭い", true, :circle, :ss, :s],
+    71 => ["[SS]弾丸:湾曲/手前で", false, :curve, :ss, :near],
+    72 => ["[SS]弾丸:湾曲/中間で(β)", false, :curve, :ss, :mid],
+    73 => ["[SS]弾丸:湾曲/奥で(β)", false, :curve, :ss, :far],
     12 => ["[S]弾丸:直進/長", false, :straight, :s, :l],
     13 => ["[S]弾丸:直進/短", false, :straight, :s, :s],
     14 => ["[S]弾丸:直進/極短", false, :straight, :s, :ss],
@@ -352,6 +364,9 @@ class BulletModule
     21 => ["[S]弾丸:追従回転/通常", true, :circle, :s, :m],
     22 => ["[S]弾丸:追従回転/広", true, :circle, :s, :l],
     23 => ["[S]弾丸:追従回転/狭い", true, :circle, :s, :s],
+    74 => ["[S]弾丸:湾曲/手前で(β)", false, :curve, :s, :near],
+    75 => ["[S]弾丸:湾曲/中間で(β)", false, :curve, :s, :mid],
+    76 => ["[S]弾丸:湾曲/奥で(β)", false, :curve, :s, :far],
     24 => ["[M]弾丸:直進/長", false, :straight, :m, :l],
     25 => ["[M]弾丸:直進/短", false, :straight, :m, :s],
     26 => ["[M]弾丸:直進/極短", false, :straight, :m, :ss],
@@ -370,32 +385,37 @@ class BulletModule
     39 => ["[M]制御:静止/生存時間短", false, :ball, :s, ],
     40 => ["[M]制御:追従/生存時間普通", true, :ball, :m, ],
     41 => ["[M]制御:追従/生存時間短", true, :ball, :s, ],
+    83 => ["[M]制御:上を向く/生存時間普通", false, :facingball, :m, :up],
+    84 => ["[M]制御:上を向く/生存時間極長", false, :facingball, :ll, :up],
+    85 => ["[M]制御:上を向く/生存時間長", false, :facingball, :l, :up],
+    86 => ["[M]制御:上を向く/生存時間短", false, :facingball, :s, :up],
+    87 => ["[M]制御:下を向く/生存時間普通", false, :facingball, :m, :down],
+    88 => ["[M]制御:下を向く/生存時間極長", false, :facingball, :ll, :down],
+    89 => ["[M]制御:下を向く/生存時間長", false, :facingball, :l, :down],
+    90 => ["[M]制御:下を向く/生存時間短", false, :facingball, :s, :down],
     42 => ["[M]制御:回転/速度普通", false, :spinball, :mid, ],
     43 => ["[M]制御:回転/速度遅", false, :spinball, :slow, ],
     44 => ["[M]制御:回転/速度速", false, :spinball, :fast, ],
+    77 => ["[M]弾丸:湾曲/手前で(β)", false, :curve, :m, :near],
+    78 => ["[M]弾丸:湾曲/中間で(β)", false, :curve, :m, :mid],
+    79 => ["[M]弾丸:湾曲/奥で(β)", false, :curve, :m, :far],
     45 => ["[L]弾丸:直進/長", false, :straight, :l, :l],
     46 => ["[L]弾丸:直進/短", false, :straight, :l, :s],
     47 => ["[L]弾丸:直進/極短", false, :straight, :l, :ss],
     48 => ["[L]きりもみ弾/長", false, :drilling, :l, :l],
     49 => ["[L]きりもみ弾/短", false, :drilling, :l, :s],
     50 => ["[L]きりもみ弾/極短", false, :drilling, :l, :ss],
+    61 => ["[L]弾丸:重力の影響を受ける弾(β)", false, :straight_g, :l],
     51 => ["[L]弾丸:回転/通常", false, :circle, :l, :m],
     52 => ["[L]弾丸:回転/広", false, :circle, :l, :l],
     53 => ["[L]弾丸:回転/狭い", false, :circle, :l, :s],
     54 => ["[L]弾丸:追従回転/通常", true, :circle, :l, :m],
     55 => ["[L]弾丸:追従回転/広", true, :circle, :l, :l],
     56 => ["[L]弾丸:追従回転/狭い", true, :circle, :l, :s],
-    101 => ["[L]弾丸:重力/短(β)", false, :straight_g, :l],
-    102 => ["[LL]弾丸:重力/短(β)", false, :straight_g, :ll],
-    111 => ["[SS]弾丸:湾曲/手前で", false, :curve, :ss, :near],
-    112 => ["[S]弾丸:湾曲/手前で", false, :curve, :s, :near],
-    113 => ["[M]弾丸:湾曲/手前で", false, :curve, :m, :near],
-    114 => ["[L]弾丸:湾曲/手前で", false, :curve, :l, :near],
-    115 => ["[SS]弾丸:湾曲/中間で(β)", false, :curve, :ss, :mid],
-    116 => ["[S]弾丸:湾曲/中間で(β)", false, :curve, :s, :mid],
-    117 => ["[M]弾丸:湾曲/中間で(β)", false, :curve, :m, :mid],
-    118 => ["[L]弾丸:湾曲/中間で(β)", false, :curve, :l, :mid],
-    131 => ["[M]制御:上を向く/生存時間短(β)", false, :ball, :s, :up],
+    80 => ["[L]弾丸:湾曲/手前で(β)", false, :curve, :l, :near],
+    81 => ["[L]弾丸:湾曲/中間で(β)", false, :curve, :l, :mid],
+    82 => ["[L]弾丸:湾曲/奥で(β)", false, :curve, :l, :far],
+    62 => ["[LL]弾丸:重力の影響を受ける弾(β)", false, :straight_g, :ll],
   }
 end
 

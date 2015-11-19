@@ -16232,7 +16232,7 @@ if (x == null) x = nil;
 
       self.life = $hash2(["l", "ll"], {"l": 93, "ll": 93})['$[]'](size);
       speed = $hash2(["l", "ll"], {"l": 0.5, "ll": $rb_divide($rb_times($rb_divide(2, self.$sqrt(3)), 2), 6)})['$[]'](size);
-      g = $hash2(["l", "ll"], {"l": $rb_divide(0.021, 2), "ll": $rb_divide(0.021, 2)})['$[]'](size);
+      g = $hash2(["l", "ll"], {"l": 0.01022, "ll": 0.01022})['$[]'](size);
       self.formula_rotation = ($a = ($b = self).$lambda, $a.$$p = (TMP_11 = function(x){var self = TMP_11.$$s || this;
 if (x == null) x = nil;
       return [0, 0, 0]}, TMP_11.$$s = self, TMP_11), $a).call($b);
@@ -16264,10 +16264,10 @@ if (x == null) x = nil;
     def.$curve = function(size, curve_pos) {
       var $a, $b, TMP_16, $c, TMP_17, self = this, base_speed = nil, curve_start = nil, curve = nil, curve_speed = nil;
 
-      self.life = $hash2(["near", "mid"], {"near": $hash2(["ss", "s", "m", "l"], {"ss": 29, "s": 29, "m": 34, "l": 41}), "mid": $hash2(["ss", "s", "m", "l"], {"ss": 27, "s": 27, "m": 31, "l": 38})})['$[]'](curve_pos)['$[]'](size);
+      self.life = $hash2(["near", "mid", "far"], {"near": $hash2(["ss", "s", "m", "l"], {"ss": 29, "s": 29, "m": 34, "l": 41}), "mid": $hash2(["ss", "s", "m", "l"], {"ss": 27, "s": 27, "m": 31, "l": 38}), "far": $hash2(["ss", "s", "m", "l"], {"ss": 28, "s": 28, "m": 33, "l": 40})})['$[]'](curve_pos)['$[]'](size);
       base_speed = $hash2(["ss", "s", "m", "l"], {"ss": $rb_divide(2, self.$sqrt(3)), "s": $rb_divide(2, self.$sqrt(3)), "m": 1, "l": 0.8})['$[]'](size);
-      curve_start = $hash2(["near", "mid"], {"near": $hash2(["ss", "s", "m", "l"], {"ss": 0, "s": 0, "m": 0, "l": 0}), "mid": $hash2(["ss", "s", "m", "l"], {"ss": 12, "s": 12, "m": 14, "l": 17})})['$[]'](curve_pos)['$[]'](size);
-      curve = $hash2(["near", "mid", "far"], {"near": $rb_plus($rb_times([60], curve_start), [60, 60, 54, 41, 22, -3]), "mid": $rb_plus($rb_times([15], curve_start), [$rb_minus(56, 44), $rb_minus(26, 22), $rb_minus(43, 45), $rb_minus(13, 28)]), "far": []})['$[]'](curve_pos);
+      curve_start = $hash2(["near", "mid", "far"], {"near": $hash2(["ss", "s", "m", "l"], {"ss": 0, "s": 0, "m": 0, "l": 0}), "mid": $hash2(["ss", "s", "m", "l"], {"ss": 12, "s": 12, "m": 14, "l": 17}), "far": $hash2(["ss", "s", "m", "l"], {"ss": 23, "s": 23, "m": 28, "l": 35})})['$[]'](curve_pos)['$[]'](size);
+      curve = $hash2(["near", "mid", "far"], {"near": $rb_plus($rb_times([60], ($rb_plus(curve_start, 1))), [60, 54, 41, 22, -3]), "mid": $rb_plus($rb_times([15], ($rb_plus(curve_start, 1))), [$rb_minus(56, 44), $rb_minus(26, 22), $rb_minus(43, 45), $rb_minus(13, 28)]), "far": $rb_plus($rb_times([3], ($rb_plus(curve_start, 1))), [3, -22, -41, -54, -60])})['$[]'](curve_pos);
       curve_speed = 0.5;
       self.formula_rotation = ($a = ($b = self).$lambda, $a.$$p = (TMP_16 = function(t){var self = TMP_16.$$s || this, b = nil;
 if (t == null) t = nil;
@@ -16305,12 +16305,9 @@ if (x == null) x = nil;
       return self;
     };
 
-    def.$ball = function(life, facing) {
-      var $a, $b, TMP_21, $c, TMP_22, $d, TMP_23, $e, TMP_24, self = this;
+    def.$ball = function(life) {
+      var $a, $b, TMP_21, $c, TMP_22, self = this;
 
-      if (facing == null) {
-        facing = nil
-      }
       self.life = $hash2(["s", "m", "l", "ll"], {"s": 60, "m": 120, "l": 240, "ll": 960})['$[]'](life);
       self.formula_rotation = ($a = ($b = self).$lambda, $a.$$p = (TMP_21 = function(x){var self = TMP_21.$$s || this;
 if (x == null) x = nil;
@@ -16318,27 +16315,36 @@ if (x == null) x = nil;
       self.formula_position = ($a = ($c = self).$lambda, $a.$$p = (TMP_22 = function(x){var self = TMP_22.$$s || this;
 if (x == null) x = nil;
       return [0, 0, 0]}, TMP_22.$$s = self, TMP_22), $a).call($c);
-      if (facing !== false && facing !== nil) {
-        self.ignore_parent_rot = true;
-        self.formula_rotation = $hash2(["up", "down"], {"up": ($a = ($d = self).$lambda, $a.$$p = (TMP_23 = function(x){var self = TMP_23.$$s || this;
+      return self;
+    };
+
+    def.$facingball = function(life, facing) {
+      var $a, $b, TMP_23, $c, TMP_24, $d, TMP_25, self = this;
+
+      self.life = $hash2(["s", "m", "l", "ll"], {"s": 15, "m": 30, "l": 60, "ll": 960})['$[]'](life);
+      self.formula_rotation = $hash2(["up", "down"], {"up": ($a = ($b = self).$lambda, $a.$$p = (TMP_23 = function(x){var self = TMP_23.$$s || this;
 if (x == null) x = nil;
-        return [0, $rb_divide($scope.get('PI'), 2), 0]}, TMP_23.$$s = self, TMP_23), $a).call($d), "down": ($a = ($e = self).$lambda, $a.$$p = (TMP_24 = function(x){var self = TMP_24.$$s || this;
+      return [0, $rb_divide($scope.get('PI'), 2), 0]}, TMP_23.$$s = self, TMP_23), $a).call($b), "down": ($a = ($c = self).$lambda, $a.$$p = (TMP_24 = function(x){var self = TMP_24.$$s || this;
 if (x == null) x = nil;
-        return [0, $rb_divide($scope.get('PI')['$-@'](), 2), 0]}, TMP_24.$$s = self, TMP_24), $a).call($e)})['$[]'](facing);};
+      return [0, $rb_divide($scope.get('PI')['$-@'](), 2), 0]}, TMP_24.$$s = self, TMP_24), $a).call($c)})['$[]'](facing);
+      self.formula_position = ($a = ($d = self).$lambda, $a.$$p = (TMP_25 = function(x){var self = TMP_25.$$s || this;
+if (x == null) x = nil;
+      return [0, 0, 0]}, TMP_25.$$s = self, TMP_25), $a).call($d);
+      self.ignore_parent_rot = true;
       return self;
     };
 
     return (def.$spinball = function(speed) {
-      var $a, $b, TMP_25, $c, TMP_26, self = this, rot_speed = nil;
+      var $a, $b, TMP_26, $c, TMP_27, self = this, rot_speed = nil;
 
       self.life = 60;
       rot_speed = $hash2(["fast", "mid", "slow"], {"fast": $rb_divide($rb_times($scope.get('PI')['$-@'](), 3), 10), "mid": $rb_divide($rb_times($scope.get('PI')['$-@'](), 3), 20), "slow": $rb_divide($rb_times($scope.get('PI')['$-@'](), 3), 30)})['$[]'](speed);
-      self.formula_rotation = ($a = ($b = self).$lambda, $a.$$p = (TMP_25 = function(x){var self = TMP_25.$$s || this;
+      self.formula_rotation = ($a = ($b = self).$lambda, $a.$$p = (TMP_26 = function(x){var self = TMP_26.$$s || this;
 if (x == null) x = nil;
-      return [$rb_times(x, rot_speed), 0, 0]}, TMP_25.$$s = self, TMP_25), $a).call($b);
-      self.formula_position = ($a = ($c = self).$lambda, $a.$$p = (TMP_26 = function(x){var self = TMP_26.$$s || this;
+      return [$rb_times(x, rot_speed), 0, 0]}, TMP_26.$$s = self, TMP_26), $a).call($b);
+      self.formula_position = ($a = ($c = self).$lambda, $a.$$p = (TMP_27 = function(x){var self = TMP_27.$$s || this;
 if (x == null) x = nil;
-      return [0, 0, 0]}, TMP_26.$$s = self, TMP_26), $a).call($c);
+      return [0, 0, 0]}, TMP_27.$$s = self, TMP_27), $a).call($c);
       return self;
     }, nil) && 'spinball';
   })(self, null);
@@ -16348,7 +16354,7 @@ if (x == null) x = nil;
 
     var def = self.$$proto, $scope = self.$$scope;
 
-    return Opal.cdecl($scope, 'MODULE_LIST', $hash(0, ["[SS]\u5F3E\u4E38:\u76F4\u9032/\u9577", false, "straight", "ss", "l"], 1, ["[SS]\u5F3E\u4E38:\u76F4\u9032/\u77ED", false, "straight", "ss", "s"], 2, ["[SS]\u5F3E\u4E38:\u76F4\u9032/\u6975\u77ED", false, "straight", "ss", "ss"], 3, ["[SS]\u304D\u308A\u3082\u307F\u5F3E/\u9577", false, "drilling", "ss", "l"], 4, ["[SS]\u304D\u308A\u3082\u307F\u5F3E/\u77ED", false, "drilling", "ss", "s"], 5, ["[SS]\u304D\u308A\u3082\u307F\u5F3E/\u6975\u77ED", false, "drilling", "ss", "ss"], 6, ["[SS]\u5F3E\u4E38:\u56DE\u8EE2/\u901A\u5E38", false, "circle", "ss", "m"], 7, ["[SS]\u5F3E\u4E38:\u56DE\u8EE2/\u5E83", false, "circle", "ss", "l"], 8, ["[SS]\u5F3E\u4E38:\u56DE\u8EE2/\u72ED\u3044", false, "circle", "ss", "s"], 9, ["[SS]\u5F3E\u4E38:\u8FFD\u5F93\u56DE\u8EE2/\u901A\u5E38", true, "circle", "ss", "m"], 10, ["[SS]\u5F3E\u4E38:\u8FFD\u5F93\u56DE\u8EE2/\u5E83", true, "circle", "ss", "l"], 11, ["[SS]\u5F3E\u4E38:\u8FFD\u5F93\u56DE\u8EE2/\u72ED\u3044", true, "circle", "ss", "s"], 12, ["[S]\u5F3E\u4E38:\u76F4\u9032/\u9577", false, "straight", "s", "l"], 13, ["[S]\u5F3E\u4E38:\u76F4\u9032/\u77ED", false, "straight", "s", "s"], 14, ["[S]\u5F3E\u4E38:\u76F4\u9032/\u6975\u77ED", false, "straight", "s", "ss"], 15, ["[S]\u304D\u308A\u3082\u307F\u5F3E/\u9577", false, "drilling", "s", "l"], 16, ["[S]\u304D\u308A\u3082\u307F\u5F3E/\u77ED", false, "drilling", "s", "s"], 17, ["[S]\u304D\u308A\u3082\u307F\u5F3E/\u6975\u77ED", false, "drilling", "s", "ss"], 18, ["[S]\u5F3E\u4E38:\u56DE\u8EE2/\u901A\u5E38", false, "circle", "s", "m"], 19, ["[S]\u5F3E\u4E38:\u56DE\u8EE2/\u5E83", false, "circle", "s", "l"], 20, ["[S]\u5F3E\u4E38:\u56DE\u8EE2/\u72ED\u3044", false, "circle", "s", "s"], 21, ["[S]\u5F3E\u4E38:\u8FFD\u5F93\u56DE\u8EE2/\u901A\u5E38", true, "circle", "s", "m"], 22, ["[S]\u5F3E\u4E38:\u8FFD\u5F93\u56DE\u8EE2/\u5E83", true, "circle", "s", "l"], 23, ["[S]\u5F3E\u4E38:\u8FFD\u5F93\u56DE\u8EE2/\u72ED\u3044", true, "circle", "s", "s"], 24, ["[M]\u5F3E\u4E38:\u76F4\u9032/\u9577", false, "straight", "m", "l"], 25, ["[M]\u5F3E\u4E38:\u76F4\u9032/\u77ED", false, "straight", "m", "s"], 26, ["[M]\u5F3E\u4E38:\u76F4\u9032/\u6975\u77ED", false, "straight", "m", "ss"], 27, ["[M]\u304D\u308A\u3082\u307F\u5F3E/\u9577", false, "drilling", "m", "l"], 28, ["[M]\u304D\u308A\u3082\u307F\u5F3E/\u77ED", false, "drilling", "m", "s"], 29, ["[M]\u304D\u308A\u3082\u307F\u5F3E/\u6975\u77ED", false, "drilling", "m", "ss"], 30, ["[M]\u5F3E\u4E38:\u56DE\u8EE2/\u901A\u5E38", false, "circle", "m", "m"], 31, ["[M]\u5F3E\u4E38:\u56DE\u8EE2/\u5E83", false, "circle", "m", "l"], 32, ["[M]\u5F3E\u4E38:\u56DE\u8EE2/\u72ED\u3044", false, "circle", "m", "s"], 33, ["[M]\u5F3E\u4E38:\u8FFD\u5F93\u56DE\u8EE2/\u901A\u5E38", true, "circle", "m", "m"], 34, ["[M]\u5F3E\u4E38:\u8FFD\u5F93\u56DE\u8EE2/\u5E83", true, "circle", "m", "l"], 35, ["[M]\u5F3E\u4E38:\u8FFD\u5F93\u56DE\u8EE2/\u72ED\u3044", true, "circle", "m", "s"], 36, ["[M]\u5236\u5FA1:\u9759\u6B62/\u751F\u5B58\u6642\u9593\u666E\u901A", false, "ball", "m"], 37, ["[M]\u5236\u5FA1:\u9759\u6B62/\u751F\u5B58\u6642\u9593\u6975\u9577", false, "ball", "ll"], 38, ["[M]\u5236\u5FA1:\u9759\u6B62/\u751F\u5B58\u6642\u9593\u9577", false, "ball", "l"], 39, ["[M]\u5236\u5FA1:\u9759\u6B62/\u751F\u5B58\u6642\u9593\u77ED", false, "ball", "s"], 40, ["[M]\u5236\u5FA1:\u8FFD\u5F93/\u751F\u5B58\u6642\u9593\u666E\u901A", true, "ball", "m"], 41, ["[M]\u5236\u5FA1:\u8FFD\u5F93/\u751F\u5B58\u6642\u9593\u77ED", true, "ball", "s"], 42, ["[M]\u5236\u5FA1:\u56DE\u8EE2/\u901F\u5EA6\u666E\u901A", false, "spinball", "mid"], 43, ["[M]\u5236\u5FA1:\u56DE\u8EE2/\u901F\u5EA6\u9045", false, "spinball", "slow"], 44, ["[M]\u5236\u5FA1:\u56DE\u8EE2/\u901F\u5EA6\u901F", false, "spinball", "fast"], 45, ["[L]\u5F3E\u4E38:\u76F4\u9032/\u9577", false, "straight", "l", "l"], 46, ["[L]\u5F3E\u4E38:\u76F4\u9032/\u77ED", false, "straight", "l", "s"], 47, ["[L]\u5F3E\u4E38:\u76F4\u9032/\u6975\u77ED", false, "straight", "l", "ss"], 48, ["[L]\u304D\u308A\u3082\u307F\u5F3E/\u9577", false, "drilling", "l", "l"], 49, ["[L]\u304D\u308A\u3082\u307F\u5F3E/\u77ED", false, "drilling", "l", "s"], 50, ["[L]\u304D\u308A\u3082\u307F\u5F3E/\u6975\u77ED", false, "drilling", "l", "ss"], 51, ["[L]\u5F3E\u4E38:\u56DE\u8EE2/\u901A\u5E38", false, "circle", "l", "m"], 52, ["[L]\u5F3E\u4E38:\u56DE\u8EE2/\u5E83", false, "circle", "l", "l"], 53, ["[L]\u5F3E\u4E38:\u56DE\u8EE2/\u72ED\u3044", false, "circle", "l", "s"], 54, ["[L]\u5F3E\u4E38:\u8FFD\u5F93\u56DE\u8EE2/\u901A\u5E38", true, "circle", "l", "m"], 55, ["[L]\u5F3E\u4E38:\u8FFD\u5F93\u56DE\u8EE2/\u5E83", true, "circle", "l", "l"], 56, ["[L]\u5F3E\u4E38:\u8FFD\u5F93\u56DE\u8EE2/\u72ED\u3044", true, "circle", "l", "s"], 101, ["[L]\u5F3E\u4E38:\u91CD\u529B/\u77ED(\u03B2)", false, "straight_g", "l"], 102, ["[LL]\u5F3E\u4E38:\u91CD\u529B/\u77ED(\u03B2)", false, "straight_g", "ll"], 111, ["[SS]\u5F3E\u4E38:\u6E7E\u66F2/\u624B\u524D\u3067", false, "curve", "ss", "near"], 112, ["[S]\u5F3E\u4E38:\u6E7E\u66F2/\u624B\u524D\u3067", false, "curve", "s", "near"], 113, ["[M]\u5F3E\u4E38:\u6E7E\u66F2/\u624B\u524D\u3067", false, "curve", "m", "near"], 114, ["[L]\u5F3E\u4E38:\u6E7E\u66F2/\u624B\u524D\u3067", false, "curve", "l", "near"], 115, ["[SS]\u5F3E\u4E38:\u6E7E\u66F2/\u4E2D\u9593\u3067(\u03B2)", false, "curve", "ss", "mid"], 116, ["[S]\u5F3E\u4E38:\u6E7E\u66F2/\u4E2D\u9593\u3067(\u03B2)", false, "curve", "s", "mid"], 117, ["[M]\u5F3E\u4E38:\u6E7E\u66F2/\u4E2D\u9593\u3067(\u03B2)", false, "curve", "m", "mid"], 118, ["[L]\u5F3E\u4E38:\u6E7E\u66F2/\u4E2D\u9593\u3067(\u03B2)", false, "curve", "l", "mid"], 131, ["[M]\u5236\u5FA1:\u4E0A\u3092\u5411\u304F/\u751F\u5B58\u6642\u9593\u77ED(\u03B2)", false, "ball", "s", "up"]))
+    return Opal.cdecl($scope, 'MODULE_LIST', $hash(0, ["[SS]弾丸:直進/長", false, "straight", "ss", "l"], 1, ["[SS]弾丸:直進/短", false, "straight", "ss", "s"], 2, ["[SS]弾丸:直進/極短", false, "straight", "ss", "ss"], 3, ["[SS]きりもみ弾/長", false, "drilling", "ss", "l"], 4, ["[SS]きりもみ弾/短", false, "drilling", "ss", "s"], 5, ["[SS]きりもみ弾/極短", false, "drilling", "ss", "ss"], 6, ["[SS]弾丸:回転/通常", false, "circle", "ss", "m"], 7, ["[SS]弾丸:回転/広", false, "circle", "ss", "l"], 8, ["[SS]弾丸:回転/狭い", false, "circle", "ss", "s"], 9, ["[SS]弾丸:追従回転/通常", true, "circle", "ss", "m"], 10, ["[SS]弾丸:追従回転/広", true, "circle", "ss", "l"], 11, ["[SS]弾丸:追従回転/狭い", true, "circle", "ss", "s"], 71, ["[SS]弾丸:湾曲/手前で", false, "curve", "ss", "near"], 72, ["[SS]弾丸:湾曲/中間で(β)", false, "curve", "ss", "mid"], 73, ["[SS]弾丸:湾曲/奥で(β)", false, "curve", "ss", "far"], 12, ["[S]弾丸:直進/長", false, "straight", "s", "l"], 13, ["[S]弾丸:直進/短", false, "straight", "s", "s"], 14, ["[S]弾丸:直進/極短", false, "straight", "s", "ss"], 15, ["[S]きりもみ弾/長", false, "drilling", "s", "l"], 16, ["[S]きりもみ弾/短", false, "drilling", "s", "s"], 17, ["[S]きりもみ弾/極短", false, "drilling", "s", "ss"], 18, ["[S]弾丸:回転/通常", false, "circle", "s", "m"], 19, ["[S]弾丸:回転/広", false, "circle", "s", "l"], 20, ["[S]弾丸:回転/狭い", false, "circle", "s", "s"], 21, ["[S]弾丸:追従回転/通常", true, "circle", "s", "m"], 22, ["[S]弾丸:追従回転/広", true, "circle", "s", "l"], 23, ["[S]弾丸:追従回転/狭い", true, "circle", "s", "s"], 74, ["[S]弾丸:湾曲/手前で(β)", false, "curve", "s", "near"], 75, ["[S]弾丸:湾曲/中間で(β)", false, "curve", "s", "mid"], 76, ["[S]弾丸:湾曲/奥で(β)", false, "curve", "s", "far"], 24, ["[M]弾丸:直進/長", false, "straight", "m", "l"], 25, ["[M]弾丸:直進/短", false, "straight", "m", "s"], 26, ["[M]弾丸:直進/極短", false, "straight", "m", "ss"], 27, ["[M]きりもみ弾/長", false, "drilling", "m", "l"], 28, ["[M]きりもみ弾/短", false, "drilling", "m", "s"], 29, ["[M]きりもみ弾/極短", false, "drilling", "m", "ss"], 30, ["[M]弾丸:回転/通常", false, "circle", "m", "m"], 31, ["[M]弾丸:回転/広", false, "circle", "m", "l"], 32, ["[M]弾丸:回転/狭い", false, "circle", "m", "s"], 33, ["[M]弾丸:追従回転/通常", true, "circle", "m", "m"], 34, ["[M]弾丸:追従回転/広", true, "circle", "m", "l"], 35, ["[M]弾丸:追従回転/狭い", true, "circle", "m", "s"], 36, ["[M]制御:静止/生存時間普通", false, "ball", "m"], 37, ["[M]制御:静止/生存時間極長", false, "ball", "ll"], 38, ["[M]制御:静止/生存時間長", false, "ball", "l"], 39, ["[M]制御:静止/生存時間短", false, "ball", "s"], 40, ["[M]制御:追従/生存時間普通", true, "ball", "m"], 41, ["[M]制御:追従/生存時間短", true, "ball", "s"], 83, ["[M]制御:上を向く/生存時間普通", false, "facingball", "m", "up"], 84, ["[M]制御:上を向く/生存時間極長", false, "facingball", "ll", "up"], 85, ["[M]制御:上を向く/生存時間長", false, "facingball", "l", "up"], 86, ["[M]制御:上を向く/生存時間短", false, "facingball", "s", "up"], 87, ["[M]制御:下を向く/生存時間普通", false, "facingball", "m", "down"], 88, ["[M]制御:下を向く/生存時間極長", false, "facingball", "ll", "down"], 89, ["[M]制御:下を向く/生存時間長", false, "facingball", "l", "down"], 90, ["[M]制御:下を向く/生存時間短", false, "facingball", "s", "down"], 42, ["[M]制御:回転/速度普通", false, "spinball", "mid"], 43, ["[M]制御:回転/速度遅", false, "spinball", "slow"], 44, ["[M]制御:回転/速度速", false, "spinball", "fast"], 77, ["[M]弾丸:湾曲/手前で(β)", false, "curve", "m", "near"], 78, ["[M]弾丸:湾曲/中間で(β)", false, "curve", "m", "mid"], 79, ["[M]弾丸:湾曲/奥で(β)", false, "curve", "m", "far"], 45, ["[L]弾丸:直進/長", false, "straight", "l", "l"], 46, ["[L]弾丸:直進/短", false, "straight", "l", "s"], 47, ["[L]弾丸:直進/極短", false, "straight", "l", "ss"], 48, ["[L]きりもみ弾/長", false, "drilling", "l", "l"], 49, ["[L]きりもみ弾/短", false, "drilling", "l", "s"], 50, ["[L]きりもみ弾/極短", false, "drilling", "l", "ss"], 61, ["[L]弾丸:重力の影響を受ける弾(β)", false, "straight_g", "l"], 51, ["[L]弾丸:回転/通常", false, "circle", "l", "m"], 52, ["[L]弾丸:回転/広", false, "circle", "l", "l"], 53, ["[L]弾丸:回転/狭い", false, "circle", "l", "s"], 54, ["[L]弾丸:追従回転/通常", true, "circle", "l", "m"], 55, ["[L]弾丸:追従回転/広", true, "circle", "l", "l"], 56, ["[L]弾丸:追従回転/狭い", true, "circle", "l", "s"], 80, ["[L]弾丸:湾曲/手前で(β)", false, "curve", "l", "near"], 81, ["[L]弾丸:湾曲/中間で(β)", false, "curve", "l", "mid"], 82, ["[L]弾丸:湾曲/奥で(β)", false, "curve", "l", "far"], 62, ["[LL]弾丸:重力の影響を受ける弾(β)", false, "straight_g", "ll"]))
   })(self, null);
 };
 
@@ -16626,7 +16632,7 @@ if (event == null) event = nil;
       return $gvars.mouse['$[]=']("top", e.$clientY());}, TMP_13.$$s = self, TMP_13), $a).call($b, "mousemove");
     $gvars.tooltip = $gvars.win.$document().$createElement("div");
     (($a = ["tootlip"]), $c = $gvars.tooltip, $c['$id='].apply($c, $a), $a[$a.length-1]);
-    (($a = ["\u9670\u967D\u795E\u9152\u3067\u306D\u3048"]), $c = $gvars.tooltip, $c['$innerHTML='].apply($c, $a), $a[$a.length-1]);
+    (($a = ["陰陽神酒でねえ"]), $c = $gvars.tooltip, $c['$innerHTML='].apply($c, $a), $a[$a.length-1]);
     (($a = ["fixed"]), $c = $gvars.tooltip.$style(), $c['$position='].apply($c, $a), $a[$a.length-1]);
     (($a = ["none"]), $c = $gvars.tooltip.$style(), $c['$display='].apply($c, $a), $a[$a.length-1]);
     return $gvars.win.$document().$getElementById("anime_container").$appendChild($gvars.tooltip.$to_n());
@@ -16784,7 +16790,7 @@ if (no == null) no = nil;
       bullet_module.$classList().$add("module");
       color = $rb_plus("#", $scope.get('COLOR_MAP')['$[]'](no).$to_s(16).$rjust(6, "0"));
       bullet_module.$style()['$[]=']("border-color", color);
-      (($a = ["      <span class=\"bulletNo\">No." + (no.$to_s().$rjust($gvars.module_max.$to_s().$length(), "0")) + "</span>\r\n      <!-- <span>\u30E2\u30B8\u30E5\u30FC\u30EB\uFF1A</span> -->\r\n      <select type=\"listbox\" id=\"index:" + (no) + "\">\r\n        <option value=\"null\">-</option>\r\n        " + (module_list_html) + "\r\n      </select>\r\n      <span>\u2220</span>\r\n      <input type=\"number\" style=\"width:3em\" id=\"rotz:" + (no) + "\" value=0>,\r\n      <input type=\"number\" style=\"width:3em\" id=\"roty:" + (no) + "\" value=0>,\r\n      <input type=\"number\" style=\"width:3em\" id=\"rotx:" + (no) + "\" value=0>\r\n\r\n      <span>\u2514</span>\r\n      <select type=\"listbox\" id=\"parent:" + (no) + "\">\r\n        <option value=\"null\">\u30DC\u30BF\u30F3</option>\r\n        " + (parent_html) + "\r\n      </select>\r\n\r\n      <select type=\"listbox\" id=\"timing:" + (no) + "\">\r\n        <option value=\"s\">\u3068\u540C\u6642\u306B</option>\r\n        <option value=\"v\">\u306E\u81EA\u7136\u6D88\u6EC5\u6642</option>\r\n        <option value=\"d02\">\u306E0.2\u79D2\u5F8C</option>\r\n        <option value=\"d05\">\u306E0.5\u79D2\u5F8C</option>\r\n        <option value=\"d10\">\u306E1\u79D2\u5F8C</option>\r\n        <option value=\"d20\">\u306E2\u79D2\u5F8C</option>\r\n        <option value=\"d30\">\u306E3\u79D2\u5F8C</option>\r\n        <option value=\"d50\">\u306E5\u79D2\u5F8C</option>\r\n        <option value=\"d100\">\u306E10\u79D2\u5F8C</option>\r\n      </select>\r\n"]), $b = bullet_module, $b['$innerHTML='].apply($b, $a), $a[$a.length-1]);
+      (($a = ["      <span class=\"bulletNo\">No." + (no.$to_s().$rjust($gvars.module_max.$to_s().$length(), "0")) + "</span>\r\n      <!-- <span>モジュール：</span> -->\r\n      <select type=\"listbox\" id=\"index:" + (no) + "\">\r\n        <option value=\"null\">-</option>\r\n        " + (module_list_html) + "\r\n      </select>\r\n      <span>∠</span>\r\n      <input type=\"number\" style=\"width:3em\" id=\"rotz:" + (no) + "\" value=0>,\r\n      <input type=\"number\" style=\"width:3em\" id=\"roty:" + (no) + "\" value=0>,\r\n      <input type=\"number\" style=\"width:3em\" id=\"rotx:" + (no) + "\" value=0>\r\n\r\n      <span>└</span>\r\n      <select type=\"listbox\" id=\"parent:" + (no) + "\">\r\n        <option value=\"null\">ボタン</option>\r\n        " + (parent_html) + "\r\n      </select>\r\n\r\n      <select type=\"listbox\" id=\"timing:" + (no) + "\">\r\n        <option value=\"s\">と同時に</option>\r\n        <option value=\"v\">の自然消滅時</option>\r\n        <option value=\"d02\">の0.2秒後</option>\r\n        <option value=\"d05\">の0.5秒後</option>\r\n        <option value=\"d10\">の1秒後</option>\r\n        <option value=\"d20\">の2秒後</option>\r\n        <option value=\"d30\">の3秒後</option>\r\n        <option value=\"d50\">の5秒後</option>\r\n        <option value=\"d100\">の10秒後</option>\r\n      </select>\r\n"]), $b = bullet_module, $b['$innerHTML='].apply($b, $a), $a[$a.length-1]);
       $gvars.module_elements['$[]='](no, bullet_module);
       return module_container.$appendChild(bullet_module);}, TMP_3.$$s = self, TMP_3), $a).call($e);
     editor_container = $gvars.win.$document().$getElementById("editor_container");
