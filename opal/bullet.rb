@@ -25,7 +25,7 @@ class Bullet
     ret = {}
 
     gamma, beta, alpha = gun_rot_vector.map(&:to_f).map{|t| t*PI/180}
-    euler = Native(`new THREE.Euler(alpha, beta, gamma, "ZYX")`)
+    euler = Native(`new THREE.Euler()`).set(alpha, beta, gamma, "ZYX")
     matrix_gun = Native(`new THREE.Matrix4()`).makeRotationFromEuler(euler)
 
     @modules.each do |key, bm|
@@ -62,7 +62,7 @@ class BulletModule
   def initialize(index, init_rot_vector, parent=nil, timing=nil)
     gamma, beta, alpha = init_rot_vector.map(&:to_f).map{|t| t*PI/180}
 
-    euler = Native(`new THREE.Euler(alpha, beta, gamma, "ZYX")`)
+    euler = Native(`new THREE.Euler()`).set(alpha, beta, gamma, "ZYX")
     @initial_matrix = Native(`new THREE.Matrix4()`).makeRotationFromEuler(euler)
 
     @parent = parent
@@ -71,13 +71,14 @@ class BulletModule
     @memo_matrix = []
     @memo_gun = nil
 
-    # to be defined by initialize methods
+    # to be defined by each initialize methods
     @same_fire_delay = 1 # delay time when "fired at same time with xxx"
     @life = 0
     @formula_position = nil
     @formula_rotation = nil
     @formula_gravity = nil
     @gravity = false
+    @ignore_parent_rot = false # to use "ball look at top/bottom"
 
     name, following, type, *param = MODULE_LIST[index]
     @name = name
@@ -95,7 +96,6 @@ class BulletModule
     if @parent
       {
         s: @parent.same_fire_delay,
-#        vanish: @life,
         v: @parent.life,
         d02: 6,
         d05: 15,
@@ -132,7 +132,7 @@ class BulletModule
     x, y, z = @formula_position[frame]
     gamma, beta, alpha = @formula_rotation[frame]
 
-    euler = Native(`new THREE.Euler(alpha, beta, gamma, "ZYX")`)
+    euler = Native(`new THREE.Euler()`).set(alpha, beta, gamma, "ZYX")
     mr = Native(`new THREE.Matrix4()`).makeRotationFromEuler(euler)
     mt = Native(`new THREE.Matrix4()`).makeTranslation(x, y, z)
 
@@ -143,19 +143,29 @@ class BulletModule
     if m = @memo_matrix[frame]
       return m.clone
     end
-
-    m_tmp = if @parent
-      parent_age = @following ? frame : frame - age(frame)
-
-      m_p = @parent.matrix(parent_age)
-      m_l = local_matrix(age(frame))
-
-      m_p.multiply(m_l)
+    
+    m_p = if @parent
+      parent_frame = @following ? frame : frame - age(frame)
+      @parent.matrix(parent_frame)
     else
-      @matrix_gun.clone.multiply(local_matrix(frame))
+      @matrix_gun.clone
+    end
+    m_l = local_matrix(age(frame))
+
+    m_tmp = if @ignore_parent_rot
+      m_p_pos = Native(`new THREE.Matrix4()`).copyPosition(m_p)
+      e_p = Native(`new THREE.Euler()`).setFromRotationMatrix(m_p, "ZYX")
+      a, b, g = e_p.x, e_p.y, e_p.z
+      
+      g = (b == 0) ? 0 : g # 実機での謎の挙動(ジンバルロック？)再現
+      
+      m_pn = Native(`new THREE.Matrix4()`).makeRotationZ(g)
+      m_p_pos.multiply(m_pn).multiply(m_l)
+    else
+      m_p.multiply(m_l)
     end
 
-    m = if @gravity
+    m_ret = if @gravity
       # この座標系では-zが上,+zが下
       xg, yg, zg = @formula_gravity[age(frame)]
 #      xg, yg, zg = 0, 0, 0.25*(age(frame)**2) # TO BE FIXED
@@ -165,9 +175,11 @@ class BulletModule
       m_tmp
     end
 
-    @memo_matrix[frame] = m.clone
-    m
+    @memo_matrix[frame] = m_ret.clone
+    m_ret
   end
+
+
 
   def straight(size, length)
     @life = {
@@ -283,11 +295,19 @@ class BulletModule
     self
   end
 
-  def ball(life)
+  def ball(life, facing=nil)
     @life = {s: 60, m: 120, l: 240, ll: 960}[life] # maybe
 
     @formula_rotation = ->(x){[0,0,0]}
     @formula_position = ->(x){[0,0,0]}
+    
+    if facing
+      @ignore_parent_rot = true
+      @formula_rotation = {
+        up: ->(x){[0,PI/2,0]},
+        down: ->(x){[0,-PI/2,0]},
+      }[facing]
+    end
 
     self
   end
@@ -375,6 +395,7 @@ class BulletModule
     116 => ["[S]弾丸:湾曲/中間で(β)", false, :curve, :s, :mid],
     117 => ["[M]弾丸:湾曲/中間で(β)", false, :curve, :m, :mid],
     118 => ["[L]弾丸:湾曲/中間で(β)", false, :curve, :l, :mid],
+    131 => ["[M]制御:上を向く/生存時間短(β)", false, :ball, :s, :up],
   }
 end
 

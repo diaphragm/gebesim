@@ -345,7 +345,7 @@ def tooltip_update
       euler.setFromQuaternion(quaternion, "ZYX")
 
       x, y, z = [translation.x, translation.y, translation.z].map{|v| (v*$scale).round}
-      a, b, g = [euler.x, euler.y, euler.z].map{|v| (v / PI * 180).round(1)}
+      a, b, g = [euler.x, euler.y, euler.z].map{|v| v / PI * 180}
 
       z = -z # 右手系と左手系の面倒くさいアレ
 
@@ -360,6 +360,7 @@ def tooltip_update
         b = 180 + b
       end
 
+      a, b, g = [a, b, g].map{|v| "%.1f" % v}
       $tooltip.innerText = "No.#{no} Age:#{age}/#{life}f Time:#{frame}/#{$max_frame}f\nx:#{x} y:#{y} z:#{z} Rot:[#{g}, #{b}, #{a}]"
       $tooltip.style.left = "#{$mouse[:left]+35}px"
       $tooltip.style.top = "#{$mouse[:top]+25}px"

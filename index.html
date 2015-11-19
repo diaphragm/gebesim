@@ -24,7 +24,7 @@
     <div id="left_container">
       <div id="title_container">
         <div id="title"><span class="ger"><span class="rede">≫</span>GER</span> BULLET <span class="rede">E</span>DIT SIMULATOR</div>
-        <div id="version">ver. 0.1</div>
+        <div id="version">ver. 0.2</div>
       </div>
 
       <div id="editor_container">
@@ -71,25 +71,43 @@
     <div class="message">
       <ul>
         <li><a href="http://ger.godeater.jp/">GOD EATER RESURRECTION</a>のシステムの一つであるバレットエディットの弾道シミュレーターです。</li>
-        <li>プレビュー画面をドラッグ、右ドラッグ、ホイールなどで操作できます。</li>
-        <li>プレビュー画面の▲っぽいやつは各モジュールのフレーム毎の頂点を示しています。マウスを合わせると情報が表示されます。表示される内容せつめい。
+        <li>WebGLに対応したブラウザが必要です。具体的にはGoogle ChromeとかIE11以上とか。</li>
+        <li>実機での測定がうまくいかず、<strong>実機と微妙にズレるモジュールには名前に(β)</strong>がついています。
+          <ul>
+            <li>「弾丸:重力の影響を受ける(β)」は、子モジュールを0.5秒以内に接続するならほぼ大丈夫です。消滅時とかにするとズレます。</li>
+            <li>「弾丸:湾曲(β)」は、モジュール発生直後は大丈夫です。湾曲する部分以降があやしい。</li>
+          </ul>
+        </li>
+        <li>プレビュー画面はドラッグ、右ドラッグ、ホイールなどで操作できます。</li>
+        <li>プレビュー画面の▲っぽい物体は各モジュールのフレーム毎の頂点を示しています。マウスを合わせると以下の情報が表示されます。
           <dl>
             <dt>No</dt><dd>モジュールNo</dd>
             <dt>Age</dt><dd>モジュールの発生からの経過フレーム / モジュールが自然消滅するまでのフレーム数</dd>
-            <dt>Time</dt><dd>発射からの経過フレーム / 全モジュールが消滅するまでのフレーム数</dd>
+            <dt>Time</dt><dd>バレット発射からの経過フレーム / 全モジュールが消滅するまでのフレーム数</dd>
             <dt>x, y, z</dt><dd>頂点の座標。xが前方向、yが右方向、zが上方向です。</dd>
             <dt>Rot</dt><dd>頂点の向き。初期の向きではなく空間に対しての向きです。</dd>
           </dl>
         </li>
         <li>プレビュー画面の座標系は「[M]弾丸:直進/極短」が1フレームに進む距離を100としています。</li>
-        <li>「弾丸:湾曲」や「弾丸:重力の影響を受ける」は未実装です。そのうち追加する予定。</li>
         <li>弾道の確認を当初の目的としているため、当たり判定は未実装です。</li>
         <li>サンプルの幾つかは2chの<a href="http://kanae.2ch.net/test/read.cgi/handygover/1444105205/">バレスレ</a>から拝借しました。</li>
-        <li>動作確認環境：Google Chrome 46</li>
         <li>ライセンス：<a href="./LICENSE.txt">MIT</a>。好きなように再配布、改変していいけど作者の名前とライセンスの表示は残してね。</li>
         <li>作者：<a rel="author" href="https://github.com/diaphragm/gebesim">@diaphragm</a></li>
         <li>バグ報告や要望などは<a href="https://docs.google.com/forms/d/17SwfseZVAfPcieeoUVD1YfMShv4vec02SyHWN7uuenM/viewform?usp=send_form">こちら</a>からどうぞ。</li>
       </ul>
+      <span>更新履歴</span>
+      <dl>
+        <dt>ver.0.1 (2015/11/14)</dt>
+          <dd><ul><li>公開</li></ul></dd>
+        <dt>ver.0.2 (2015/11/21)</dt>
+        <dd><ul>
+          <li>「弾丸:重力の影響を受ける(β)」モジュールを追加。</li>
+          <li>「弾丸:湾曲(β)」系モジュールを追加。</li>
+          <li>「制御:上を向く」「制御:下を向く」系モジュールを追加。</li>
+          <li>計算方法の見直しにより動作速度が少し改善。</li>
+          <li>その他微調整</li>
+        </ul></dd>
+      </dl>
     </div>
 
     <div class="google_adsense">
